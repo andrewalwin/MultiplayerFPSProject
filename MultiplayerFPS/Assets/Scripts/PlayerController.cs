@@ -16,8 +16,7 @@ public class PlayerController : MonoBehaviour {
 
     //all our spring settings so they show up in inspector
     [Header("Sprint settings:")]
-    [SerializeField]
-    private JointDriveMode jointMode = JointDriveMode.Position;
+
     [SerializeField]
     private float jointSpring = 20f;
     [SerializeField]
@@ -99,7 +98,6 @@ public class PlayerController : MonoBehaviour {
     {
         joint.yDrive = new JointDrive
         {
-            mode = jointMode,
             positionSpring = _jointSpring,
             maximumForce = jointMaxForce
         };
