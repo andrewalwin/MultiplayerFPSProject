@@ -4,7 +4,13 @@ using UnityEngine.Networking;
 public class PlayerShoot : NetworkBehaviour {
 
     //weapon reference, for swapping weapons and models
-    public PlayerWeapon weapon;
+    [SerializeField]
+    private PlayerWeapon weapon;
+    //reference to the weaponGFX layer
+    [SerializeField]
+    private GameObject weaponGFX;
+    [SerializeField]
+    private string weaponLayerName = "Weapon";
 
     private const string PLAYER_TAG = "Player";
 
@@ -23,6 +29,7 @@ public class PlayerShoot : NetworkBehaviour {
             Debug.LogError("PlayerShoot: No Camera Attached");
             this.enabled = false;
         }
+        weaponGFX.layer = LayerMask.NameToLayer(weaponLayerName);
     }
 
     void Update()
