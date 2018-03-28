@@ -17,6 +17,8 @@ public class WeaponManager : NetworkBehaviour {
 
     private PlayerWeapon currentWeapon;
 
+    private WeaponGraphics currentGraphics;
+
 	void Start () {
         //when the player spawns they equip their primary weapon
         EquipWeapon(primaryWeapon);
@@ -32,14 +34,22 @@ public class WeaponManager : NetworkBehaviour {
         //need to parent our weapon to our weaponholder so it follows us
         _weaponIns.transform.SetParent(weaponHolder);
 
+        //look for the graphics component on our instance
+        currentGraphics = _weaponIns.GetComponent<WeaponGraphics>();
+        if(currentGraphics == null)
+        {
+            currentGraphics = _weaponIns.GetComponentInChildren<WeaponGraphics>();
+            if (currentGraphics == null)
+            {
+                Debug.LogError("No WeaponGraphics component on the weapon object: " + _weaponIns.name);
+            }
+            }
+
         if (isLocalPlayer)
         {
             //setting the weapon and all children of the parent to this layer in case our weapon is made of multiple objects
-            _weaponIns.layer = LayerMask.NameToLayer(weaponLayerName);
-            foreach (Transform child in _weaponIns.transform)
-            {
-                child.gameObject.layer = LayerMask.NameToLayer(weaponLayerName);
-            }
+
+            Util.SetLayerRecursively(_weaponIns, LayerMask.NameToLayer(weaponLayerName));
 
         }
     }
@@ -47,6 +57,11 @@ public class WeaponManager : NetworkBehaviour {
     public PlayerWeapon GetCurrentWeapon()
     {
         return currentWeapon;
+    }
+
+    public WeaponGraphics GetCurrentGraphics()
+    {
+        return currentGraphics;
     }
 	
 }

@@ -58,10 +58,53 @@ public class PlayerShoot : NetworkBehaviour {
         }
     }
     
+    //called on server when player shoots
+    [Command]
+    void CmdOnShoot()
+    {
+        RpcDoShootEffect();
+    }
+
+    //called on all clients when we need to show shoot effect
+    [ClientRpc]
+    void RpcDoShootEffect()
+    {
+        //play our particle system
+        ParticleSystem pS = weaponManager.GetCurrentGraphics().muzzleFlash;
+        if (!pS.isPlaying) pS.Play();
+
+        else if (pS.isPlaying) pS.Stop();
+
+        else if (pS.isPlaying) pS.Stop();
+
+        else if (!pS.isPlaying) pS.Play();
+    }
+
+    //Called on server when something is hit, takes in hit point and surface normal
+    [Command]
+    void CmdOnHit(Vector3 _pos, Vector3 _normal)
+    {
+        RpcDoHitEffect(_pos, _normal);
+    }
+    
+    //called on all clients when something is hit, spawns in hit effects
+    [ClientRpc]
+    void RpcDoHitEffect(Vector3 _pos, Vector3 _normal)
+    {
+        GameObject _hitEffect = (GameObject)Instantiate(weaponManager.GetCurrentGraphics().hitEffectPrefab, _pos, Quaternion.LookRotation(_normal));
+        Destroy(_hitEffect, 2f);
+    }
+
     [Client]
     private void Shoot()
     {
-        Debug.Log("SHOOTING");
+        if (!isLocalPlayer)
+        {
+            return;
+        }
+        //are shooting, call OnShoot method on server
+        CmdOnShoot();
+
         RaycastHit _hit;
         //define the ray: start, direction, out hit, distance, layerMask (lots of other overloads as well)
         if (Physics.Raycast(cam.transform.position, cam.transform.forward, out _hit, currentWeapon.range, mask))
@@ -71,6 +114,9 @@ public class PlayerShoot : NetworkBehaviour {
             {
                 CmdPlayerShot(_hit.collider.name, currentWeapon.damage);
             }
+
+            //hit something, call hit effect (change to be different for player/surface)
+            CmdOnHit(_hit.point, _hit.normal);
         }
     }
 
