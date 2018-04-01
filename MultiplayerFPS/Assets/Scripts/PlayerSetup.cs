@@ -2,6 +2,7 @@
 using UnityEngine.Networking;
 
 [RequireComponent(typeof(Player))]
+[RequireComponent(typeof(PlayerController))]
 //NetworkBehaviour allows our script to act as an object which is networked
 public class PlayerSetup : NetworkBehaviour {
 
@@ -49,6 +50,17 @@ public class PlayerSetup : NetworkBehaviour {
             //pos, scale, etc will be default
             playerUIInstance = Instantiate(playerUIPrefab);
             playerUIInstance.name = playerUIPrefab.name;
+
+            //Configure PlayerUI
+            PlayerUI ui = playerUIInstance.GetComponent<PlayerUI>();
+            if(ui == null)
+            {
+                Debug.LogError("No Player UI component on PlayerUI Prefab");
+            }
+            else
+            {
+                ui.SetController(GetComponent<PlayerController>());
+            }
         }
 
         GetComponent<Player>().Setup();

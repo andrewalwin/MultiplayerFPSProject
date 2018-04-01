@@ -13,6 +13,20 @@ public class PlayerController : MonoBehaviour {
     private float lookSensitivity = 6f;
     [SerializeField]
     private float thrusterForce = 1000f;
+    [SerializeField]
+    private float thrusterFuelUseSpeed = 1f;   //thruster lasts for this amount of seconds
+    [SerializeField]
+    private float thrusterRegenSpeed = 0.3f;
+    private float thrusterFuelAmount = 1;
+
+    public float GetThrusterFuelAmount()
+    {
+        return thrusterFuelAmount;
+    }
+
+    //mask so our player can only collide with enviroment with this mask
+    [SerializeField]
+    private LayerMask environmentMask;
 
     //all our spring settings so they show up in inspector
     [Header("Sprint settings:")]
@@ -40,6 +54,18 @@ public class PlayerController : MonoBehaviour {
 
     void Update()
     {
+        //raycasting so our spring joint performs correctly over surfaces
+        RaycastHit _hit;
+        if(Physics.Raycast(transform.position, Vector3.down, out _hit))
+        {
+            //want to add offset on our y so we're always the same amount above the surface below us
+            joint.targetPosition = new Vector3(0f, -_hit.point.y, 0f);
+        }
+        else
+        {
+            joint.targetPosition = new Vector3(0f, 0f, 0f);
+        }
+
         //calculate movement as a 3d vector, doing Raw to get complete control of movement, without raw unity performs its own smoothing
         float xMov = Input.GetAxis("Horizontal");
         float zMov = Input.GetAxis("Vertical");
@@ -77,17 +103,26 @@ public class PlayerController : MonoBehaviour {
 
         Vector3 _thrusterForce = Vector3.zero;
         //Apply thruster force
-        if (Input.GetButton("Jump"))
+        if (Input.GetButton("Jump") && thrusterFuelAmount > 0)
         {
-            //if we dont press jump, then we're just applying 0 up, which is fine
-            _thrusterForce = Vector3.up * thrusterForce;
-            //want to set our joint sprint to 0 so it doesnt pull us down
-            SetJointSettings(0f);
+            thrusterFuelAmount -= thrusterFuelUseSpeed * Time.deltaTime;
+
+            //only add thruster force if we have enough fuel so player cant hover forever
+            if (thrusterFuelAmount >= 0.01f)
+            {
+                //if we dont press jump, then we're just applying 0 up, which is fine
+                _thrusterForce = Vector3.up * thrusterForce;
+                //want to set our joint sprint to 0 so it doesnt pull us down
+                SetJointSettings(0f);
+            }
         }
         else
         {
+            thrusterFuelAmount += thrusterRegenSpeed * Time.deltaTime;
             SetJointSettings(jointSpring);
         }
+        //make sure our thruster fuel amount doesnt go above 1
+        thrusterFuelAmount = Mathf.Clamp(thrusterFuelAmount, 0f, 1f);
 
         motor.ApplyThruster(_thrusterForce);
 

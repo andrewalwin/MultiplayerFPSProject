@@ -18,8 +18,8 @@ TagManager:
   - RemotePlayer
   - DontDraw
   - Weapon
-  - 
-  - 
+  - CollideableEnvironment
+  - NonCollideableEnvironment
   - 
   - 
   - 
