@@ -8,6 +8,9 @@ public class GameManager : MonoBehaviour {
 
     public MatchSettings matchSettings;
 
+    //marking as gameobject to disable all audio listeners and other things
+    [SerializeField]
+    private GameObject sceneCamera;
     
     private void Awake()
     {
@@ -19,6 +22,14 @@ public class GameManager : MonoBehaviour {
         {
             instance = this;
         }
+    }
+    public void SetSceneCameraActive(bool isActive)
+    {
+        if(sceneCamera == null)
+        {
+            return;
+        }
+        sceneCamera.SetActive(isActive);
     }
     
 

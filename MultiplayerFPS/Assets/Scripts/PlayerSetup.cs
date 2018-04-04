@@ -22,9 +22,8 @@ public class PlayerSetup : NetworkBehaviour {
 
     [SerializeField]
     GameObject playerUIPrefab;
-    private GameObject playerUIInstance;
-
-    Camera sceneCamera;
+    [HideInInspector]
+    public GameObject playerUIInstance;
 
     void Start()
     {
@@ -36,13 +35,6 @@ public class PlayerSetup : NetworkBehaviour {
         }
         else
         {
-            //only want to disable scene camera if we are the local player (not each time another player joins)
-            sceneCamera = Camera.main;
-            if (sceneCamera != null)
-            {
-                sceneCamera.gameObject.SetActive(false); //tagged our cameara as the main camera so we can easily disable it
-            }
-
             //disable player graphics for local player
             SetLayerRecursively(playerGraphics, LayerMask.NameToLayer(dontDrawLayerName));
 
@@ -108,10 +100,7 @@ public class PlayerSetup : NetworkBehaviour {
     {
         Destroy(playerUIInstance);
 
-       if(sceneCamera != null)
-        {
-            sceneCamera.gameObject.SetActive(true);
-        }
+        GameManager.instance.SetSceneCameraActive(true);
 
         GameManager.UnRegisterPlayer(transform.name);
     }

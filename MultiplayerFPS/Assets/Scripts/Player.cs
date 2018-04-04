@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
+[RequireComponent(typeof(PlayerSetup))]
 public class Player : NetworkBehaviour {
 
     [SyncVar]
@@ -22,11 +23,21 @@ public class Player : NetworkBehaviour {
 
     [SerializeField]
     private Behaviour[] disableOnDeath;
+
+    [SerializeField]
+    private GameObject[] disableGameObjectsOnDeath;
+
     //going to have a component and a boolean saying whether or not it was enabled on start, and we need to re-enable it
     [SerializeField]
     private bool[] wasEnabled;
 
-	public void Setup () {
+    [SerializeField]
+    private GameObject deathEffect;
+
+    [SerializeField]
+    private GameObject spawnEffect;
+
+    public void Setup () {
 
         wasEnabled = new bool[disableOnDeath.Length];
         for (int i = 0; i < wasEnabled.Length; i++)
@@ -37,16 +48,16 @@ public class Player : NetworkBehaviour {
         SetDefaults();
 	}
 
- //   void Update() {
- //       if (!isLocalPlayer)
- //       {
- //           return;
- //       }
- //       if (Input.GetKeyDown(KeyCode.K))
- //       {
- //           RpcTakeDamage(9000);
- //       }
-	//}
+    void Update() {
+        if (!isLocalPlayer)
+        {
+            return;
+        }
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            RpcTakeDamage(9000);
+        }
+	}
 
     [ClientRpc]
     public void RpcTakeDamage(int _amount)
@@ -76,10 +87,27 @@ public class Player : NetworkBehaviour {
             disableOnDeath[i].enabled = false;
         }
 
+        //DISABLE Game Objects
+        for (int i = 0; i < disableGameObjectsOnDeath.Length; i++)
+        {
+            disableGameObjectsOnDeath[i].SetActive(false);
+        }
+
+        //disable collider
         Collider _col = GetComponent<Collider>();
         if (_col != null)
         {
             _col.enabled = false;
+        }
+
+        //spawn death effect
+        GameObject _gfxIns = Instantiate(deathEffect, transform.position, Quaternion.identity);
+        Destroy(_gfxIns, 3f);
+
+        if (isLocalPlayer)
+        {
+            GameManager.instance.SetSceneCameraActive(true);
+            GetComponent<PlayerSetup>().playerUIInstance.SetActive(false);
         }
 
         Debug.Log(transform.name + " IS DAED");
@@ -115,10 +143,25 @@ public class Player : NetworkBehaviour {
             disableOnDeath[i].enabled = wasEnabled[i];
         }
 
+        for (int i = 0; i < disableGameObjectsOnDeath.Length; i++)
+        {
+            //enable our gameobjects
+            disableGameObjectsOnDeath[i].SetActive(true);
+        }
+
         Collider _col = GetComponent<Collider>();
         if(_col != null)
         {
             _col.enabled = true;
         }
+        if (isLocalPlayer)
+        {
+            GameManager.instance.SetSceneCameraActive(false);
+            GetComponent<PlayerSetup>().playerUIInstance.SetActive(true);
+        }
+
+        //create spawn effect
+        GameObject _gfxIns = Instantiate(spawnEffect, transform.position, Quaternion.identity);
+        Destroy(_gfxIns, 2f);
     }
 }

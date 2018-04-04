@@ -20,6 +20,7 @@ public class PlayerShoot : NetworkBehaviour {
     private LayerMask mask;
 
     private WeaponManager weaponManager;
+    private Player player;
 
     void Start()
     {
@@ -30,6 +31,7 @@ public class PlayerShoot : NetworkBehaviour {
         }
 
         weaponManager = GetComponent<WeaponManager>();
+        player = GetComponent<Player>();
     }
 
     void Update()
@@ -98,7 +100,7 @@ public class PlayerShoot : NetworkBehaviour {
     [Client]
     private void Shoot()
     {
-        if (!isLocalPlayer)
+        if (!isLocalPlayer || player.isDead || player == null)
         {
             return;
         }
