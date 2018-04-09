@@ -53,9 +53,10 @@ public class PlayerSetup : NetworkBehaviour {
             {
                 ui.SetController(GetComponent<PlayerController>());
             }
+            //make sure to call setup here or else its called for all players when a new player joins
+            GetComponent<Player>().SetupPlayer();
         }
 
-        GetComponent<Player>().Setup();
     }
 
     void SetLayerRecursively(GameObject obj, int newLayer)
@@ -100,8 +101,10 @@ public class PlayerSetup : NetworkBehaviour {
     {
         Destroy(playerUIInstance);
 
-        GameManager.instance.SetSceneCameraActive(true);
-
+        if (isLocalPlayer)
+        {
+            GameManager.instance.SetSceneCameraActive(true);
+        }
         GameManager.UnRegisterPlayer(transform.name);
     }
 

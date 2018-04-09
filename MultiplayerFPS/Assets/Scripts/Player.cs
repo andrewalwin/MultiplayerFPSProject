@@ -37,27 +37,53 @@ public class Player : NetworkBehaviour {
     [SerializeField]
     private GameObject spawnEffect;
 
-    public void Setup () {
+    private bool firstSetup = true;
 
-        wasEnabled = new bool[disableOnDeath.Length];
-        for (int i = 0; i < wasEnabled.Length; i++)
+    public void SetupPlayer() {
+
+        if (isLocalPlayer)
         {
-            //store whether or not a component was disabled at the start
-            wasEnabled[i] = disableOnDeath[i].enabled;
+            //switch cameras, only want to do this on the local player, not all clients
+            GameManager.instance.SetSceneCameraActive(false);
+            GetComponent<PlayerSetup>().playerUIInstance.SetActive(true);
         }
+
+        CmdBroadcastNewPlayer();
+    }
+
+    [Command]
+    private void CmdBroadcastNewPlayer() {
+
+        RpcSetupPlayerOnAllClients();
+    }
+
+    [ClientRpc]
+    private void RpcSetupPlayerOnAllClients() {
+        //only want to do this list on the players first setup
+        if (firstSetup)
+        {
+            wasEnabled = new bool[disableOnDeath.Length];
+            for (int i = 0; i < wasEnabled.Length; i++)
+            {
+                //store whether or not a component was disabled at the start
+                wasEnabled[i] = disableOnDeath[i].enabled;
+            }
+            firstSetup = false;
+        }
+        
         SetDefaults();
 	}
 
-    void Update() {
-        if (!isLocalPlayer)
-        {
-            return;
-        }
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            RpcTakeDamage(9000);
-        }
-	}
+ //   void Update() {
+ //       if (!isLocalPlayer)
+ //       {
+ //           return;
+ //       }
+ //       if (Input.GetKeyDown(KeyCode.K))
+ //       {
+ //           RpcTakeDamage(9000);
+ //       }
+	//}
 
     [ClientRpc]
     public void RpcTakeDamage(int _amount)
@@ -126,9 +152,12 @@ public class Player : NetworkBehaviour {
         transform.position = _spawnPoint.position;
         transform.rotation = _spawnPoint.rotation;
 
-        Debug.Log("Player " + transform.name + " respawned!");
+        //want to make sure all clients receive this spawn point information so that everything spawns in the right place
+        yield return new WaitForSeconds(0.1f);
 
-        SetDefaults();
+        SetupPlayer();
+
+        Debug.Log("Player " + transform.name + " respawned!");
     }
 
     public void SetDefaults()
@@ -153,11 +182,6 @@ public class Player : NetworkBehaviour {
         if(_col != null)
         {
             _col.enabled = true;
-        }
-        if (isLocalPlayer)
-        {
-            GameManager.instance.SetSceneCameraActive(false);
-            GetComponent<PlayerSetup>().playerUIInstance.SetActive(true);
         }
 
         //create spawn effect
