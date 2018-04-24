@@ -36,10 +36,13 @@ public class PlayerMove : MonoBehaviour {
     [SerializeField]
     private Camera cam;
 
+    //weapon stuff
+    private WeaponManagerOff weaponManager;
 
     // Use this for initialization
     void Start () {
         rb = GetComponent<Rigidbody>();
+        weaponManager = GetComponent<WeaponManagerOff>();
 	}
     
 	
@@ -123,6 +126,11 @@ public class PlayerMove : MonoBehaviour {
             velocity = Vector3.zero;
             canMove = true;
             dashing = false;
+        }
+
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            weaponManager.SwitchWeapon();
         }
     }
 
