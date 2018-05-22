@@ -19,7 +19,7 @@ public class PlayerMove : MonoBehaviour {
 
     //dashing stuff
     [SerializeField]
-    private float dashSpeed = 2f;
+    private float dashSpeed = 6f;
     private float dashKeyCooldown = 0.3f;
     private KeyCode dashKey;
     private bool dashing = false;
@@ -39,11 +39,21 @@ public class PlayerMove : MonoBehaviour {
     //weapon stuff
     private WeaponManagerOff weaponManager;
 
+    //UI Stuff
+    [SerializeField]
+    GameObject playerUIPrefab;
+    [HideInInspector]
+    public GameObject playerUIInstance;
+
     // Use this for initialization
     void Start () {
         rb = GetComponent<Rigidbody>();
         weaponManager = GetComponent<WeaponManagerOff>();
-	}
+
+        //ui stuff
+        playerUIInstance = Instantiate(playerUIPrefab);
+        playerUIInstance.name = playerUIPrefab.name;
+    }
     
 	
 	// Update is called once per frame

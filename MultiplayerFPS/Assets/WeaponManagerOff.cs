@@ -10,33 +10,44 @@ public class WeaponManagerOff : MonoBehaviour {
     //position to put our weapon
     [SerializeField]
     private Transform weaponHolder;
+    [SerializeField]
+    private Camera mainCamera;
 
     [SerializeField]
-    private PlayerWeapon primaryWeapon;
+    private Weapon primaryWeapon;
 
     [SerializeField]
-    private PlayerWeapon secondaryWeapon;
+    private Weapon secondaryWeapon;
 
-    private PlayerWeapon currentWeapon;
+    private Weapon currentWeapon;
 
     private WeaponGraphics currentGraphics;
 
     //storing our weapon gameobject
     private GameObject weaponIns;
 
+    private ObjectPooler objectPooler;
+
     // Use this for initialization
     void Start () {
 
         EquipWeapon(primaryWeapon);
-		
-	}
+        objectPooler = FindObjectOfType<ObjectPooler>();
+        Debug.Log(primaryWeapon.projectilePrefab.name);
+        ObjectPoolItem primaryProjItem = new ObjectPoolItem(primaryWeapon.clipSize, primaryWeapon.projectilePrefab, true, primaryWeapon.projectilePrefab.name);
+        ObjectPoolItem secondaryProjItem = new ObjectPoolItem(secondaryWeapon.clipSize, secondaryWeapon.projectilePrefab, true, secondaryWeapon.projectilePrefab.name);
+        objectPooler.itemsToPool.Add(primaryProjItem);
+        objectPooler.itemsToPool.Add(secondaryProjItem);
+        objectPooler.PopulatePools();
 
-    void EquipWeapon(PlayerWeapon _weapon)
+    }
+
+    void EquipWeapon(Weapon _weapon)
     {
         currentWeapon = _weapon;
 
         //load weapon graphics
-        GameObject _weaponIns = (GameObject)Instantiate(_weapon.wpnGraphics, weaponHolder.position, weaponHolder.rotation);
+        GameObject _weaponIns = (GameObject)Instantiate(_weapon.gameObject, weaponHolder.position, weaponHolder.rotation);
         //need to parent our weapon to our weaponholder so it follows us
         _weaponIns.transform.SetParent(weaponHolder);
 
@@ -54,7 +65,22 @@ public class WeaponManagerOff : MonoBehaviour {
         Util.SetLayerRecursively(_weaponIns, LayerMask.NameToLayer(weaponLayerName));
     }
 
-    public PlayerWeapon GetCurrentWeapon()
+    private void Update()
+    {
+        //rotate weapon to face crosshair
+        Ray rayCrosshair = mainCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+        RaycastHit hit = new RaycastHit();
+        if (Physics.Raycast(rayCrosshair, out hit, 100, -1))
+        {
+        //    weaponIns.transform.LookAt(hit.point);
+        }
+        //else
+        //{        
+            weaponIns.transform.LookAt(rayCrosshair.GetPoint(100));
+        //}
+    }
+
+    public Weapon GetCurrentWeapon()
     {
         return currentWeapon;
     }

@@ -6,34 +6,20 @@ using UnityEngine;
 public class Projectile : MonoBehaviour {
 
     private float damage { get; set; }
-    private float speed { get; set; }
-    private Vector3 direction { get; set; }
     private float destroyDelay { get; set; }
     [SerializeField]
     private GameObject projectileHitEffect { get; set; }
 
-    public Projectile(float _damage, float _speed, Vector3 _direction)
-    {
-        damage = _damage;
-        speed = _speed;
-        direction = _direction;
-    }
-
     public Projectile()
     {
         damage = 10f;
-        speed = 20f;
         destroyDelay = 5f;
-    }
-
-    void Update()
-    {
-        DestroyProjectile(destroyDelay);
-
     }
 
     public virtual void OnCollisionEnter(Collision collision)
     {
+        Debug.Log(collision.transform.name);
+        collision.gameObject.SendMessage("Damage", damage);
         if(projectileHitEffect != null)
         {
             GameObject _hitEffect = (GameObject)Instantiate(projectileHitEffect, collision.transform.position, Quaternion.LookRotation(collision.transform.position.normalized));
@@ -47,7 +33,8 @@ public class Projectile : MonoBehaviour {
     {
         if(this.gameObject != null)
         {
-            Destroy(this.gameObject, delay);
+            //Destroy(this.gameObject, delay);
+            this.gameObject.SetActive(false);
         }
     }
 
