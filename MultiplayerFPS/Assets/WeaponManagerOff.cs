@@ -30,16 +30,14 @@ public class WeaponManagerOff : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        objectPooler = ObjectPooler.Instance;
 
+        //start by equipping our primary weapon
         EquipWeapon(primaryWeapon);
-        objectPooler = FindObjectOfType<ObjectPooler>();
-        Debug.Log(primaryWeapon.projectilePrefab.name);
-        ObjectPoolItem primaryProjItem = new ObjectPoolItem(primaryWeapon.clipSize, primaryWeapon.projectilePrefab, true, primaryWeapon.projectilePrefab.name);
-        ObjectPoolItem secondaryProjItem = new ObjectPoolItem(secondaryWeapon.clipSize, secondaryWeapon.projectilePrefab, true, secondaryWeapon.projectilePrefab.name);
-        objectPooler.itemsToPool.Add(primaryProjItem);
-        objectPooler.itemsToPool.Add(secondaryProjItem);
-        objectPooler.PopulatePools();
 
+        //add the object pools for our weapons projectiles
+        objectPooler.AddPool(primaryWeapon.projectilePrefab, primaryWeapon.projectilePrefab.name, primaryWeapon.clipSize);
+        objectPooler.AddPool(secondaryWeapon.projectilePrefab, secondaryWeapon.projectilePrefab.name, secondaryWeapon.clipSize);
     }
 
     void EquipWeapon(Weapon _weapon)

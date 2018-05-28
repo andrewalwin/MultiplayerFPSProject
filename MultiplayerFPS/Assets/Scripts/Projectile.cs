@@ -6,36 +6,40 @@ using UnityEngine;
 public class Projectile : MonoBehaviour {
 
     private float damage { get; set; }
-    private float destroyDelay { get; set; }
+    private float projectileLifetime { get; set; }
     [SerializeField]
     private GameObject projectileHitEffect { get; set; }
+
+    private void Start()
+    {
+        StartCoroutine(DestroyProjectile(projectileLifetime));
+    }
 
     public Projectile()
     {
         damage = 10f;
-        destroyDelay = 5f;
+        projectileLifetime = 5f;
     }
 
-    public virtual void OnCollisionEnter(Collision collision)
+
+    public void OnTriggerEnter(Collider collision)
     {
         Debug.Log(collision.transform.name);
-        collision.gameObject.SendMessage("Damage", damage);
-        if(projectileHitEffect != null)
+        collision.gameObject.SendMessage("Damage", damage, SendMessageOptions.DontRequireReceiver);
+        if (projectileHitEffect != null)
         {
             GameObject _hitEffect = (GameObject)Instantiate(projectileHitEffect, collision.transform.position, Quaternion.LookRotation(collision.transform.position.normalized));
         }
 
-        DestroyProjectile(0);
+        this.gameObject.SetActive(false);
     }
 
     //destroys our projectile, can have special functionality here, like a grenade exploding when it gets destroyed after x seconds
-    public virtual void DestroyProjectile(float delay)
+    public virtual IEnumerator DestroyProjectile(float delay)
     {
-        if(this.gameObject != null)
-        {
-            //Destroy(this.gameObject, delay);
-            this.gameObject.SetActive(false);
-        }
+        yield return new WaitForSeconds(delay);
+
+        this.gameObject.SetActive(false);
     }
 
 

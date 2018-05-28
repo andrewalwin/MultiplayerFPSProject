@@ -80,10 +80,7 @@ public class Weapon : MonoBehaviour{
             //spawn our bullet at our firePoint, and addForce to it in its forward direction (since we align its forward with the front of our gun)
             //could also call a function/set a flag IN our bullet that just has it move
             //GameObject projectileIns = Instantiate(projectilePrefab, firePoint.transform.position, firePoint.transform.rotation);
-            GameObject projectileIns = FindObjectOfType<ObjectPooler>().GetPooledObject(projectilePrefab.name);
-            projectileIns.transform.position = firePoint.transform.position;
-            projectileIns.transform.rotation = firePoint.transform.rotation;
-            projectileIns.SetActive(true);
+            GameObject projectileIns = ObjectPooler.Instance.SpawnFromPool(projectilePrefab.name, firePoint.transform.position, firePoint.transform.rotation);
             projectileIns.GetComponent<Rigidbody>().AddForce(firePoint.transform.forward * fireSpeed);
             currentAmmo--;
         }
