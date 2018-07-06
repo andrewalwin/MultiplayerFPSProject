@@ -474,6 +474,11 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 114889897048022822, guid: 3659401d509ffed40b05963606f9acc1,
+        type: 2}
+      propertyPath: weaponList.Array.size
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4476458506012382, guid: 3659401d509ffed40b05963606f9acc1, type: 2}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -555,6 +560,18 @@ Prefab:
       propertyPath: primaryWeapon
       value: 
       objectReference: {fileID: 114776896269031200, guid: e4a9e8eb20eb2444da327e916172507c,
+        type: 2}
+    - target: {fileID: 114889897048022822, guid: 3659401d509ffed40b05963606f9acc1,
+        type: 2}
+      propertyPath: weaponList.Array.data[0]
+      value: 
+      objectReference: {fileID: 114776896269031200, guid: e4a9e8eb20eb2444da327e916172507c,
+        type: 2}
+    - target: {fileID: 114889897048022822, guid: 3659401d509ffed40b05963606f9acc1,
+        type: 2}
+      propertyPath: weaponList.Array.data[1]
+      value: 
+      objectReference: {fileID: 114416877544185172, guid: 7cb52677348ded640840495a9db2f452,
         type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 3659401d509ffed40b05963606f9acc1, type: 2}

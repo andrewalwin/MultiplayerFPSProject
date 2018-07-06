@@ -6,22 +6,41 @@ public class Util
 {
 
     //set an object and all its children to a specific layer
-    public static void SetLayerRecursively(GameObject _obj, int _newLayer)
+    public static void SetLayerRecursively(GameObject obj, int newLayer)
     {
-        if (_obj == null)
+        if (obj == null)
         {
             return;
         }
 
-        _obj.layer = _newLayer;
+        obj.layer = newLayer;
 
-        foreach (Transform _child in _obj.transform)
+        foreach (Transform child in obj.transform)
         {
-            if(_child == null)
+            if(child == null)
             {
                 continue;
             }
-            SetLayerRecursively(_child.gameObject, _newLayer);
+            SetLayerRecursively(child.gameObject, newLayer);
+        }
+    }
+
+    //enable/disable an object and all its children
+    public static void SetEnabledRecursively(GameObject obj, bool enabled)
+    {
+        if(obj.gameObject == null)
+        {
+            return;
+        }
+        obj.gameObject.SetActive(enabled);
+
+        foreach (Transform child in obj.transform)
+        {
+            if(child == null)
+            {
+                continue;
+            }
+            SetEnabledRecursively(child.gameObject, enabled);
         }
     }
 }

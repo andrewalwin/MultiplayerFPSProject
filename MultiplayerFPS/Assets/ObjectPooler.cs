@@ -15,10 +15,21 @@ public class ObjectPooler : MonoBehaviour{
     public List<Pool> pools;
     public Dictionary<string, List<GameObject>> poolDictionary;
 
-    public static ObjectPooler Instance;
+    public static ObjectPooler instance;
 		
 	void Awake(){
-		Instance = this;
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if(instance != null)
+        {
+            Debug.LogError("ObjectPooler already exists");
+            Destroy(gameObject);
+        }
+        DontDestroyOnLoad(gameObject);
+
+
         poolDictionary = new Dictionary<string, List<GameObject>>();
     }
 
@@ -99,6 +110,7 @@ public class ObjectPooler : MonoBehaviour{
         }
     }
 
+    //Create a new pool of objects/expand an existing pool
     public void AddPool(GameObject obj, string name, int size)
     {
         //if pool of this type already exists, just expand upon it

@@ -13,31 +13,48 @@ public class WeaponManagerOff : MonoBehaviour {
     [SerializeField]
     private Camera mainCamera;
 
+    //list of our weapons
     [SerializeField]
-    private Weapon primaryWeapon;
-
-    [SerializeField]
-    private Weapon secondaryWeapon;
-
-    private Weapon currentWeapon;
-
-    private WeaponGraphics currentGraphics;
+    private Weapon[] weaponList;
 
     //storing our weapon gameobject
     private GameObject weaponIns;
+
+    //references to the gameobjects we instantiate from our weaponList
+    private GameObject[] weaponInsList;
+
+    private Weapon currentWeapon;
+    private int currentWeaponIndex;
+
+    private WeaponGraphics currentGraphics;
 
     private ObjectPooler objectPooler;
 
     // Use this for initialization
     void Start () {
-        objectPooler = ObjectPooler.Instance;
+        objectPooler = ObjectPooler.instance;
+
+        weaponInsList = new GameObject[weaponList.Length];
 
         //start by equipping our primary weapon
-        EquipWeapon(primaryWeapon);
+        for(int i = weaponList.Length -1; i >= 0; i--)
+        {
+            //add the object pools for our weapons projectiles
+            objectPooler.AddPool(weaponList[i].projectilePrefab, weaponList[i].projectilePrefab.name, weaponList[i].clipSize);
+            //spawn the non primary weapons then disable them
+            EquipWeapon(weaponList[i]);
+
+            weaponInsList[i] = weaponIns;
+
+            weaponIns.gameObject.SetActive(false);
+        }
+
+        currentWeaponIndex = 0;
+        weaponInsList[currentWeaponIndex].SetActive(true);
 
         //add the object pools for our weapons projectiles
-        objectPooler.AddPool(primaryWeapon.projectilePrefab, primaryWeapon.projectilePrefab.name, primaryWeapon.clipSize);
-        objectPooler.AddPool(secondaryWeapon.projectilePrefab, secondaryWeapon.projectilePrefab.name, secondaryWeapon.clipSize);
+        //objectPooler.AddPool(primaryWeapon.projectilePrefab, primaryWeapon.projectilePrefab.name, primaryWeapon.clipSize);
+        //objectPooler.AddPool(secondaryWeapon.projectilePrefab, secondaryWeapon.projectilePrefab.name, secondaryWeapon.clipSize);
     }
 
     void EquipWeapon(Weapon _weapon)
@@ -61,6 +78,8 @@ public class WeaponManagerOff : MonoBehaviour {
             }
 
         Util.SetLayerRecursively(_weaponIns, LayerMask.NameToLayer(weaponLayerName));
+
+        weaponIns.SetActive(true);
     }
 
     private void Update()
@@ -73,8 +92,11 @@ public class WeaponManagerOff : MonoBehaviour {
         //    weaponIns.transform.LookAt(hit.point);
         }
         //else
-        //{        
+        //{      
+        if (weaponIns != null)
+        {
             weaponIns.transform.LookAt(rayCrosshair.GetPoint(100));
+        }
         //}
     }
 
@@ -90,15 +112,9 @@ public class WeaponManagerOff : MonoBehaviour {
 
     public void SwitchWeapon()
     {
-        if(GetCurrentWeapon() == primaryWeapon)
-        {
-            GameObject.Destroy(weaponIns);
-            EquipWeapon(secondaryWeapon);
-        }
-        else if(GetCurrentWeapon() == secondaryWeapon)
-        {
-            GameObject.Destroy(weaponIns);
-            EquipWeapon(primaryWeapon);
-        }
+        weaponIns.SetActive(false);
+        currentWeaponIndex = (currentWeaponIndex + 1) % weaponList.Length;
+        weaponIns = weaponInsList[currentWeaponIndex];
+        weaponInsList[currentWeaponIndex].SetActive(true);
     }
 }

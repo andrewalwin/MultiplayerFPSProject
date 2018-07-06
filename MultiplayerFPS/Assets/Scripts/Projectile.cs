@@ -10,11 +10,11 @@ public class Projectile : MonoBehaviour {
     [SerializeField]
     private GameObject projectileHitEffect { get; set; }
 
-    private void Start()
+    private void OnEnable()
     {
+        StopCoroutine(DestroyProjectile(projectileLifetime));
         StartCoroutine(DestroyProjectile(projectileLifetime));
     }
-
     public Projectile()
     {
         damage = 10f;

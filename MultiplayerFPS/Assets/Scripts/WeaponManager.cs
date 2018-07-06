@@ -49,7 +49,7 @@ public class WeaponManager : NetworkBehaviour {
         {
             //setting the weapon and all children of the parent to this layer in case our weapon is made of multiple objects
 
-            Util.SetLayerRecursively(_weaponIns, LayerMask.NameToLayer(weaponLayerName))
+            Util.SetLayerRecursively(_weaponIns, LayerMask.NameToLayer(weaponLayerName));
         }
     }
 
