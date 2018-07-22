@@ -3,12 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
+[RequireComponent(typeof(PoolableObject))]
 public class Projectile : MonoBehaviour {
 
     private float damage { get; set; }
     private float projectileLifetime { get; set; }
     [SerializeField]
     private GameObject projectileHitEffect { get; set; }
+
+    private PoolableObject poolableObject;
+
+    private void Start()
+    {
+        poolableObject = gameObject.GetComponent<PoolableObject>();
+    }
 
     private void OnEnable()
     {
@@ -22,7 +30,7 @@ public class Projectile : MonoBehaviour {
     }
 
 
-    public void OnTriggerEnter(Collider collision)
+    public void OnCollision(Collider collision)
     {
         Debug.Log(collision.transform.name);
         collision.gameObject.SendMessage("Damage", damage, SendMessageOptions.DontRequireReceiver);
@@ -34,12 +42,12 @@ public class Projectile : MonoBehaviour {
         this.gameObject.SetActive(false);
     }
 
-    //destroys our projectile, can have special functionality here, like a grenade exploding when it gets destroyed after x seconds
+    //destroys our projectile and returns it to our object pool using our PoolableObject component
     public virtual IEnumerator DestroyProjectile(float delay)
     {
         yield return new WaitForSeconds(delay);
-
         this.gameObject.SetActive(false);
+        poolableObject.RePoolObject();
     }
 
 

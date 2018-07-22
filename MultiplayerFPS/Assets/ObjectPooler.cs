@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectPooler : MonoBehaviour{
+public class ObjectPooler : MonoBehaviour {
 
     [System.Serializable]
     public class Pool
@@ -12,31 +12,29 @@ public class ObjectPooler : MonoBehaviour{
         public int size;
     }
 
-    public List<Pool> pools;
-    public Dictionary<string, List<GameObject>> poolDictionary;
+    public List<Pool> pools = new List<Pool>();
+    public Dictionary<string, Queue<GameObject>> poolDictionary = new Dictionary<string, Queue<GameObject>>();
 
     public static ObjectPooler instance;
-		
-	void Awake(){
+
+    void Awake() {
         if (instance == null)
         {
             instance = this;
         }
-        else if(instance != null)
+        else if (instance != null)
         {
             Debug.LogError("ObjectPooler already exists");
             Destroy(gameObject);
         }
         DontDestroyOnLoad(gameObject);
 
-
-        poolDictionary = new Dictionary<string, List<GameObject>>();
     }
 
-    void Start(){
+    void Start() {
         //spawn any objects that have been added to our pool list not at runtime
-        PopulatePools();
-	}
+        //PopulatePools();
+    }
 
     public GameObject SpawnFromPool(string name, Vector3 position, Quaternion rotation)
     {
@@ -45,94 +43,91 @@ public class ObjectPooler : MonoBehaviour{
             Debug.Log("Pool with name: " + name + " does not exist");
             return null;
         }
-        List<GameObject> objectToSpawnList = poolDictionary[name];
-        for (int i = 0; i < objectToSpawnList.Count; i++)
+        Queue<GameObject> objectToSpawnQueue = poolDictionary[name];
+        if (objectToSpawnQueue.Count > 0)
         {
             //if we've found a valid object, spawn it
-            if (!objectToSpawnList[i].activeInHierarchy)
+            if (objectToSpawnQueue.Peek() != null)
             {
-                objectToSpawnList[i].SetActive(true);
-                objectToSpawnList[i].transform.position = position;
-                objectToSpawnList[i].transform.rotation = rotation;
+                GameObject spawnObject = objectToSpawnQueue.Dequeue();
+                spawnObject.SetActive(true);
+                spawnObject.transform.position = position;
+                spawnObject.transform.rotation = rotation;
                 //reset the objects velocity in case it had one before being set to false
-                if (objectToSpawnList[i].GetComponent<Rigidbody>() != null)
+                if (spawnObject.GetComponent<Rigidbody>() != null)
                 {
-                    objectToSpawnList[i].GetComponent<Rigidbody>().velocity = Vector3.zero;
+                    spawnObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
                 }
-                return objectToSpawnList[i];
+                return spawnObject;
             }
         }
         //didnt find an inactive object, need to add a new one to the pool (could also just spawn a NEW one instead of increasing our pool size which may be better
-        ExpandPool(name);
+        ExpandPool(name, 1);
         return SpawnFromPool(name, position, rotation);
     }
 
     //expand the total of our item pool
-    public void ExpandPool(string name)
+    public void ExpandPool(string name, int size)
     {
         foreach (Pool pool in pools)
         {
-            if(pool.name == name)
+            if (pool.name.Equals(name))
             {
-                pool.size++;
-            }
-            PopulatePools();
-        }
-    }
-
-    //instantiate the objects we need defined by our pools list
-    public void PopulatePools()
-    {
-        foreach (Pool pool in pools)
-        {
-            //if we dont have a list for this object in our poolDictionary
-            if (!poolDictionary.ContainsKey(pool.name))
-            {
-                List<GameObject> objectPool = new List<GameObject>();
-                for (int i = 0; i < pool.size; i++)
-                {
-                    GameObject obj = Instantiate(pool.prefab);
-                    obj.SetActive(false);
-                    objectPool.Add(obj);
-                }
-                poolDictionary.Add(pool.name, objectPool);
-            }
-            //already have a list of this type of object, need to expand it
-            else if (poolDictionary.ContainsKey(pool.name))
-            {
-                for(int i = 0; i < pool.size - poolDictionary[pool.name].Count; i++)
-                {
-                    GameObject obj = Instantiate(pool.prefab);
-                    obj.SetActive(false);
-                    poolDictionary[pool.name].Add(obj);
+                GameObject objPrefab = pool.prefab;
+                    Queue<GameObject> existingPool = poolDictionary[name];
+                    {
+                    for (int i = 0; i <= size; i++)
+                    {
+                        GameObject obj = Instantiate(objPrefab);
+                        obj.SetActive(false);
+                        existingPool.Enqueue(obj);
+                    }
+                    return;
                 }
             }
         }
     }
 
-    //Create a new pool of objects/expand an existing pool
-    public void AddPool(GameObject obj, string name, int size)
-    {
+        //Create a new pool of objects/expand an existing pool
+        public void AddPool(GameObject prefab, string name, int size)
+        {
         //if pool of this type already exists, just expand upon it
-        foreach(Pool pool in pools)
+        if (poolDictionary.ContainsKey(name))
         {
-            if(pool.name == name)
-            {
-                pool.size += size;
-                PopulatePools();
-                return;
-            }
+            ExpandPool(name, size);
+            return;
         }
-        //create the new pool we are going to add
-        Pool newPool = new Pool();
-        newPool.prefab = obj;
-        newPool.name = name;
-        newPool.size = size;
+       
+            //create the new pool we are going to add
+            Pool newPool = new Pool();
+            newPool.prefab = prefab;
+            newPool.name = name;
+            newPool.size = size;
+            pools.Add(newPool);
 
-        pools.Add(newPool);
+            Queue<GameObject> newPoolQueue = new Queue<GameObject>();
+            for (int i = 0; i < size; i++)
+            {
+                GameObject obj = Instantiate(prefab);
+                obj.SetActive(false);
+            newPoolQueue.Enqueue(obj);
+            }
+            poolDictionary.Add(name, newPoolQueue);
 
-        //populate our pools
-        PopulatePools();
+            //pools.Add(newPool);
+
+            ////populate our pools
+            //PopulatePools();
+        }
+
+        //re-pool an object
+        public void RePool(GameObject obj, string name)
+        {
+                if (poolDictionary.ContainsKey(name))
+                {
+                    poolDictionary[name].Enqueue(obj);
+                }
+        }
     }
 
-}
+
