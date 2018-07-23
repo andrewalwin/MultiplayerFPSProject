@@ -93,8 +93,25 @@ public class Weapon : MonoBehaviour{
             //could also call a function/set a flag IN our bullet that just has it move
             //GameObject projectileIns = Instantiate(projectilePrefab, firePoint.transform.position, firePoint.transform.rotation);
             GameObject projectileIns = ObjectPooler.instance.SpawnFromPool(projectilePrefab.name, firePoint.transform.position, firePoint.transform.rotation);
-            projectileIns.GetComponent<Rigidbody>().AddForce(firePoint.transform.forward * fireSpeed);
+            //projectileIns.GetComponent<Rigidbody>().AddForce(firePoint.transform.forward * fireSpeed);
+            projectileIns.GetComponent<Rigidbody>().velocity = firePoint.transform.forward * fireSpeed;
+            DoShootEffect();
             currentAmmo--;
+        }
+    }
+
+    private void DoShootEffect()
+    {
+        if(fireEffect != null)
+        {
+            ParticleSystem pS = fireEffect;
+            if (!pS.isPlaying) pS.Play();
+
+            else if (pS.isPlaying) pS.Stop();
+
+            else if (pS.isPlaying) pS.Stop();
+
+            if (!pS.isPlaying) pS.Play();
         }
     }
 
@@ -109,6 +126,13 @@ public class Weapon : MonoBehaviour{
         ammoCount = Mathf.Clamp(ammoCount - clipSize, 0, maxAmmo);
         //player can now shoot and is not reloading
         canShoot = true;
+        reloading = false;
+    }
+
+    //when we swap weapons we need to cancel the reload to avoid unwanted behavior
+    public void stopReload()
+    {
+        StopCoroutine("Reload");
         reloading = false;
     }
 }

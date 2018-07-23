@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Fire
   - BasicBullet
+  - Physics
   layers:
   - Default
   - TransparentFX

@@ -233,7 +233,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxAmmo: 60
   clipSize: 12
-  fireSpeed: 1600
+  fireSpeed: 120
   fireDelay: 0.3
   firePoint: {fileID: 4138502759825708}
   fireEffect: {fileID: 198073600260226020}

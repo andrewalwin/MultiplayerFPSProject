@@ -112,7 +112,11 @@ public class WeaponManagerOff : MonoBehaviour {
 
     public void SwitchWeapon()
     {
+        //set our current weapon to inactive
         weaponIns.SetActive(false);
+        //attempt to stop our weapons reload in case we swap in the middle of reloading
+        weaponIns.GetComponent<Weapon>().stopReload();
+        //find the next weapon to equip and set it to active
         currentWeaponIndex = (currentWeaponIndex + 1) % weaponList.Length;
         weaponIns = weaponInsList[currentWeaponIndex];
         weaponInsList[currentWeaponIndex].SetActive(true);
