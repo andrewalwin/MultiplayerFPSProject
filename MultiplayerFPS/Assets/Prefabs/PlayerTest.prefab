@@ -88,6 +88,7 @@ GameObject:
   - component: {fileID: 54742146572871492}
   - component: {fileID: 65955995465750158}
   - component: {fileID: 114439775949125774}
+  - component: {fileID: 114928818541177356}
   - component: {fileID: 114889897048022822}
   m_Layer: 0
   m_Name: PlayerTest
@@ -371,6 +372,9 @@ MonoBehaviour:
   dashSpeed: 2
   cameraRotationLimit: 85
   cam: {fileID: 20619897994648768}
+  playerUIPrefab: {fileID: 1262025400824262, guid: a6393f9c2b7d4fa4284bce71d5d07464,
+    type: 2}
+  playerUIInstance: {fileID: 0}
 --- !u!114 &114448644189526518
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -395,20 +399,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponLayerName: Weapon
   weaponHolder: {fileID: 4180537587533310}
-  primaryWeapon:
-    name: Glock
-    damage: 10
-    range: 100
-    fireRate: 0
-    wpnGraphics: {fileID: 1830226923818032, guid: 342642c88d8092e49953e0cc12973711,
-      type: 2}
-  secondaryWeapon:
-    name: Glock
-    damage: 10
-    range: 100
-    fireRate: 0
-    wpnGraphics: {fileID: 1887598873913650, guid: 7cb52677348ded640840495a9db2f452,
-      type: 2}
+  mainCamera: {fileID: 0}
+  weaponList: []
+--- !u!114 &114928818541177356
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1716121588963058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09d2490a750bcef40934cd74d8f9c525, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
+  currentHealth: 0
 --- !u!124 &124642068314887728
 Behaviour:
   m_ObjectHideFlags: 1

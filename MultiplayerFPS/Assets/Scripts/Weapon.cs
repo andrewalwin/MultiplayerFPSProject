@@ -135,4 +135,14 @@ public class Weapon : MonoBehaviour{
         StopCoroutine("Reload");
         reloading = false;
     }
+
+    public int GetCurrentAmmo()
+    {
+        return currentAmmo;
+    }
+    
+    public int GetMaxAmmo()
+    {
+        return maxAmmo;
+    }
 }

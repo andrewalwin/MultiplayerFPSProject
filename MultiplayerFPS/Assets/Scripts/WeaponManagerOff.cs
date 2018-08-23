@@ -121,4 +121,14 @@ public class WeaponManagerOff : MonoBehaviour {
         weaponIns = weaponInsList[currentWeaponIndex];
         weaponInsList[currentWeaponIndex].SetActive(true);
     }
+
+    public int GetCurrentAmmo()
+    {
+        return currentWeapon.GetCurrentAmmo();
+    }
+    
+    public int GetCurrentMaxAmmo()
+    {
+        return currentWeapon.GetMaxAmmo();
+    }
 }

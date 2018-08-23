@@ -9,8 +9,8 @@ public class Health : MonoBehaviour {
     [SerializeField]
     private int currentHealth;
 
-    delegate void HealthChangedDelegate();
-    HealthChangedDelegate healthChanged;
+    public delegate void HealthChangedDelegate();
+    public HealthChangedDelegate healthChanged;
 
 	void Awake () {
         currentHealth = maxHealth;
@@ -18,7 +18,7 @@ public class Health : MonoBehaviour {
 	
     public void Damage(int damageAmount)
     {
-        currentHealth = Mathf.Min(0, currentHealth - damageAmount);
+        currentHealth = Mathf.Max(0, currentHealth - damageAmount);
         healthChanged();
     }
 
@@ -38,5 +38,15 @@ public class Health : MonoBehaviour {
     {
         int roundedRecover = Mathf.RoundToInt(recoverAmount);
         Recover(roundedRecover);
+    }
+
+    public int GetCurrentHealth()
+    {
+        return currentHealth;
+    }
+
+    public int GetMaxHealth()
+    {
+        return maxHealth;
     }
 }
