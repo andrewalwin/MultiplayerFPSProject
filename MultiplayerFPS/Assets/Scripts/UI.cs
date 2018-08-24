@@ -7,12 +7,23 @@ public class UI : MonoBehaviour {
 
     [SerializeField]
     private Image healthFill;
+    [SerializeField]
+    private Image healthBackground;
+
+    [SerializeField]
+    private Text ammoText;
 
     private PlayerMove player;
 
     private Health playerHealth;
 
-	void Start () {	
+    private WeaponManagerOff playerWeaponManager;
+
+	void Update () {	
+        if(playerWeaponManager != null)
+        {
+            UpdateAmmoCount(playerWeaponManager.GetCurrentAmmo(), playerWeaponManager.GetCurrentMaxAmmo());
+        }
 	}
 
     void UpdateHealthBar()
@@ -22,17 +33,27 @@ public class UI : MonoBehaviour {
         healthFill.color = Color.Lerp(Color.red * 1.5f, Color.green, healthPercentage);
     }
 
-    void UpdateAmmoCount()
+    public void UpdateAmmoCount(int currentAmmo, int maxAmmo)
     {
-
+        ammoText.text = currentAmmo.ToString() + " / " + maxAmmo.ToString();
+        Debug.Log(ammoText.text);
     }
 
     public void SetPlayer(PlayerMove _player)
     {
         player = _player;
+        gameObject.transform.SetParent(player.gameObject.transform);
+
         if((playerHealth = _player.GetComponent<Health>()) != null)
         {
             playerHealth.healthChanged += UpdateHealthBar;
         }
+        else
+        {
+            healthFill.enabled = false;
+            healthBackground.enabled = false;
+        }
+
+        playerWeaponManager = _player.GetComponent<WeaponManagerOff>();
     }
 }

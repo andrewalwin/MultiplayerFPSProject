@@ -22,7 +22,6 @@ public class WeaponManager : NetworkBehaviour {
 	void Start () {
         //when the player spawns they equip their primary weapon
         EquipWeapon(primaryWeapon);
-
 	}
 
     void EquipWeapon (PlayerWeapon _weapon)

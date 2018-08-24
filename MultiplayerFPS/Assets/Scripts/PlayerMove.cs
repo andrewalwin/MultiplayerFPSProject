@@ -37,7 +37,7 @@ public class PlayerMove : MonoBehaviour {
     private Camera cam;
 
     //weapon stuff
-    private WeaponManagerOff weaponManager;
+    public WeaponManagerOff weaponManager;
 
     private Health health;
 

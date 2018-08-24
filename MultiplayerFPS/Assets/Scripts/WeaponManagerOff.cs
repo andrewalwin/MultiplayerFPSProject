@@ -13,69 +13,56 @@ public class WeaponManagerOff : MonoBehaviour {
     [SerializeField]
     private Camera mainCamera;
 
-    //list of our weapons
     [SerializeField]
-    private Weapon[] weaponList;
+    private GameObject[] weaponPrefabList;
 
-    //storing our weapon gameobject
     private GameObject weaponIns;
-
-    //references to the gameobjects we instantiate from our weaponList
     private GameObject[] weaponInsList;
-
-    private Weapon currentWeapon;
     private int currentWeaponIndex;
 
-    private WeaponGraphics currentGraphics;
+    private Weapon currentWeapon;
+
+    private WeaponGraphics currentWeaponGraphics;
 
     private ObjectPooler objectPooler;
 
     // Use this for initialization
     void Start () {
         objectPooler = ObjectPooler.instance;
+        weaponInsList = new GameObject[weaponPrefabList.Length];
 
-        weaponInsList = new GameObject[weaponList.Length];
-
-        //start by equipping our primary weapon
-        for(int i = weaponList.Length -1; i >= 0; i--)
+        for(int i = weaponPrefabList.Length -1; i >= 0; i--)
         {
-            //add the object pools for our weapons projectiles
-            objectPooler.AddPool(weaponList[i].projectilePrefab, weaponList[i].projectilePrefab.name, weaponList[i].clipSize);
-            //spawn the non primary weapons then disable them
-            EquipWeapon(weaponList[i]);
+            GameObject prefabWeapon = weaponPrefabList[i];
+            Weapon prefabWeaponScript = prefabWeapon.GetComponent<Weapon>();
+            if (prefabWeapon != null)
+            {
+                objectPooler.AddPool(prefabWeaponScript.projectilePrefab, prefabWeaponScript.projectilePrefab.name, prefabWeaponScript.clipSize);
 
-            weaponInsList[i] = weaponIns;
+                EquipWeapon(prefabWeapon);
+                weaponInsList[i] = weaponIns;
+                weaponIns.gameObject.SetActive(false);
+            }
 
-            weaponIns.gameObject.SetActive(false);
         }
 
         currentWeaponIndex = 0;
         weaponInsList[currentWeaponIndex].SetActive(true);
-
-        //add the object pools for our weapons projectiles
-        //objectPooler.AddPool(primaryWeapon.projectilePrefab, primaryWeapon.projectilePrefab.name, primaryWeapon.clipSize);
-        //objectPooler.AddPool(secondaryWeapon.projectilePrefab, secondaryWeapon.projectilePrefab.name, secondaryWeapon.clipSize);
     }
 
-    void EquipWeapon(Weapon _weapon)
+    void EquipWeapon(GameObject _weapon)
     {
-        currentWeapon = _weapon;
-
-        //load weapon graphics
-        GameObject _weaponIns = (GameObject)Instantiate(_weapon.gameObject, weaponHolder.position, weaponHolder.rotation);
-        //need to parent our weapon to our weaponholder so it follows us
+        GameObject _weaponIns = (GameObject)Instantiate(_weapon, weaponHolder.position, weaponHolder.rotation);
         _weaponIns.transform.SetParent(weaponHolder);
 
-        //save our weapon instantiation
         weaponIns = _weaponIns;
-
-        //look for the graphics component on our instance
+        currentWeapon = weaponIns.GetComponent<Weapon>();
  
-            currentGraphics = _weaponIns.GetComponentInChildren<WeaponGraphics>();
-            if (currentGraphics == null)
-            {
-                Debug.LogError("No WeaponGraphics component on the weapon object: " + _weaponIns.name);
-            }
+        //currentWeaponGraphics = _weaponIns.GetComponentInChildren<WeaponGraphics>();
+        //if (currentWeaponGraphics == null)
+        //{
+        //    Debug.LogError("No WeaponGraphics component on the weapon object: " + _weaponIns.name);
+        //}
 
         Util.SetLayerRecursively(_weaponIns, LayerMask.NameToLayer(weaponLayerName));
 
@@ -100,15 +87,6 @@ public class WeaponManagerOff : MonoBehaviour {
         //}
     }
 
-    public Weapon GetCurrentWeapon()
-    {
-        return currentWeapon;
-    }
-
-    public WeaponGraphics GetCurrentGraphics()
-    {
-        return currentGraphics;
-    }
 
     public void SwitchWeapon()
     {
@@ -117,9 +95,20 @@ public class WeaponManagerOff : MonoBehaviour {
         //attempt to stop our weapons reload in case we swap in the middle of reloading
         weaponIns.GetComponent<Weapon>().stopReload();
         //find the next weapon to equip and set it to active
-        currentWeaponIndex = (currentWeaponIndex + 1) % weaponList.Length;
+        currentWeaponIndex = (currentWeaponIndex + 1) % weaponPrefabList.Length;
         weaponIns = weaponInsList[currentWeaponIndex];
         weaponInsList[currentWeaponIndex].SetActive(true);
+        currentWeapon = weaponIns.GetComponent<Weapon>();
+    }
+
+    public Weapon GetCurrentWeapon()
+    {
+        return currentWeapon;
+    }
+
+    public WeaponGraphics GetCurrentGraphics()
+    {
+        return currentWeaponGraphics;
     }
 
     public int GetCurrentAmmo()

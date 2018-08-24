@@ -50,7 +50,6 @@ public class Weapon : MonoBehaviour{
     [SerializeField]
     public GameObject wpnGraphics;
 
-
     void Start()
     {
         currentAmmo = clipSize;
