@@ -7,10 +7,11 @@ using UnityEngine;
 public class Projectile : MonoBehaviour {
 
     private float damage { get; set; }
+    private float knockbackAmount { get; set; }
     private float projectileLifetime { get; set; }
 
     [SerializeField]
-    private GameObject projectileHitEffect { get; set; }
+    private GameObject projectileHitEffect;
 
     private PoolableObject poolableObject;
 
@@ -27,37 +28,42 @@ public class Projectile : MonoBehaviour {
     public Projectile()
     {
         damage = 10f;
-        projectileLifetime = 5f;
+        knockbackAmount = 10f;
+        projectileLifetime = 10f;
     }
 
 
-    public void OnTriggerEnter(Collider col)
+    public void OnCollisionEnter(Collision col)
     {
         print(col.gameObject.tag);
-        col.gameObject.SendMessage("Damage", damage, SendMessageOptions.DontRequireReceiver);
-        if (projectileHitEffect != null)
+        if (!col.gameObject.tag.ToLower().Contains("projectile"))
         {
-            GameObject _hitEffect = (GameObject)Instantiate(projectileHitEffect, col.transform.position, Quaternion.LookRotation(col.transform.position.normalized));
-        }
+            Health collidedObjectHealth;
+            if ((collidedObjectHealth = col.gameObject.GetComponent<Health>()) != null)
+            {
+                collidedObjectHealth.Damage(damage);
+            }
 
-        //if we hit a physics object, move it with our projectiles force
-        if(col.gameObject.tag.Contains("Physics") && col.gameObject.GetComponent<Rigidbody>() != null)
-        {
-            Debug.Log("PHYSICS");
-            col.gameObject.GetComponent<Rigidbody>().AddForce(gameObject.transform.forward * 10, ForceMode.Impulse);
-        }
+            if (projectileHitEffect != null)
+            {
+                GameObject _hitEffect = (GameObject)Instantiate(projectileHitEffect, col.contacts[0].point, Quaternion.LookRotation(col.contacts[0].normal));
+            }
 
-        this.gameObject.SetActive(false);
+            if (col.gameObject.tag.Contains("Physics") && col.gameObject.GetComponent<Rigidbody>() != null)
+            {
+                Debug.Log("PHYSICS");
+                col.gameObject.GetComponent<Rigidbody>().AddForce(gameObject.transform.forward * knockbackAmount, ForceMode.Impulse);
+            }
+
+            this.gameObject.SetActive(false);
+            poolableObject.RePoolObject();
+        }
     }
 
-    //destroys our projectile and returns it to our object pool using our PoolableObject component
     public virtual IEnumerator DestroyProjectile(float delay)
     {
         yield return new WaitForSeconds(delay);
         this.gameObject.SetActive(false);
         poolableObject.RePoolObject();
     }
-
-
-
 }

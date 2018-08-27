@@ -36,7 +36,6 @@ public class UI : MonoBehaviour {
     public void UpdateAmmoCount(int currentAmmo, int maxAmmo)
     {
         ammoText.text = currentAmmo.ToString() + " / " + maxAmmo.ToString();
-        Debug.Log(ammoText.text);
     }
 
     public void SetPlayer(PlayerMove _player)
