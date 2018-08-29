@@ -22,7 +22,7 @@ public class UI : MonoBehaviour {
 	void Update () {	
         if(playerWeaponManager != null)
         {
-            UpdateAmmoCount(playerWeaponManager.GetCurrentAmmo(), playerWeaponManager.GetCurrentMaxAmmo());
+            UpdateAmmoCount(playerWeaponManager.GetCurrentAmmo(), playerWeaponManager.GetCurrentAmmoCount());
         }
 	}
 

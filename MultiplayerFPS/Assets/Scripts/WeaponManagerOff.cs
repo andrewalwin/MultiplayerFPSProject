@@ -116,8 +116,8 @@ public class WeaponManagerOff : MonoBehaviour {
         return currentWeapon.GetCurrentAmmo();
     }
     
-    public int GetCurrentMaxAmmo()
+    public int GetCurrentAmmoCount()
     {
-        return currentWeapon.GetMaxAmmo();
+        return currentWeapon.GetAmmoCount();
     }
 }

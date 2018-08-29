@@ -162,8 +162,8 @@ public class Weapon : MonoBehaviour{
         return currentAmmo;
     }
     
-    public int GetMaxAmmo()
+    public int GetAmmoCount()
     {
-        return maxAmmo;
+        return ammoCount;
     }
 }
