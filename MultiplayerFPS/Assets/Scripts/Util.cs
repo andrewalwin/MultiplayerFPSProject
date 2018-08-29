@@ -43,4 +43,16 @@ public class Util
             SetEnabledRecursively(child.gameObject, enabled);
         }
     }
+
+    //generate a normally distributed point user a Box-Muller transform given a mean and standard deviation
+    public static float GenerateBoxMullerPoint(float mean, float stdDev)
+    {
+        float u1 = 1.0f - Random.Range(0f, 1f);
+        float u2 = 1.0f - Random.Range(0f, 1f);
+
+        float randStdNormal = Mathf.Sqrt(-2.0f * Mathf.Log(u1)) * Mathf.Sin(2.0f * Mathf.PI * u2);
+
+        float randNormal = mean + stdDev * randStdNormal;
+        return randNormal;
+    }
 }

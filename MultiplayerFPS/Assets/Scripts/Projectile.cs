@@ -7,7 +7,8 @@ using UnityEngine;
 public class Projectile : MonoBehaviour {
 
     private float damage { get; set; }
-    private float knockbackAmount { get; set; }
+    [SerializeField]
+    private float knockbackAmount;
     private float projectileLifetime { get; set; }
 
     [SerializeField]
@@ -28,14 +29,14 @@ public class Projectile : MonoBehaviour {
     public Projectile()
     {
         damage = 10f;
-        knockbackAmount = 10f;
+        knockbackAmount = 1f;
         projectileLifetime = 10f;
     }
 
 
     public void OnCollisionEnter(Collision col)
     {
-        print(col.gameObject.tag);
+        print(col.contacts[0].point);
         if (!col.gameObject.tag.ToLower().Contains("projectile"))
         {
             Health collidedObjectHealth;
@@ -52,7 +53,11 @@ public class Projectile : MonoBehaviour {
             if (col.gameObject.tag.Contains("Physics") && col.gameObject.GetComponent<Rigidbody>() != null)
             {
                 Debug.Log("PHYSICS");
-                col.gameObject.GetComponent<Rigidbody>().AddForce(gameObject.transform.forward * knockbackAmount, ForceMode.Impulse);
+                Vector3 worldTravelDirection = transform.TransformVector(gameObject.transform.forward).normalized;
+                if (col.gameObject.GetComponent<Rigidbody>() != null)
+                {
+                    col.gameObject.GetComponent<Rigidbody>().AddForceAtPosition(transform.InverseTransformDirection(worldTravelDirection) * knockbackAmount, col.contacts[0].point, ForceMode.Impulse);
+                }
             }
 
             this.gameObject.SetActive(false);

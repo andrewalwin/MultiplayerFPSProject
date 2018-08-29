@@ -48,10 +48,17 @@ public class Weapon : MonoBehaviour{
     private bool reloading;
 
     [SerializeField]
+    private float weaponAccuracy;
+
+    private Camera weaponCamera;
+
+    [SerializeField]
     public GameObject wpnGraphics;
 
     void Start()
     {
+        weaponCamera = GetComponentInParent<Camera>();
+
         currentAmmo = clipSize;
         ammoCount = maxAmmo - clipSize;
 
@@ -88,12 +95,27 @@ public class Weapon : MonoBehaviour{
     {
         if (projectilePrefab != null)
         {
-            //spawn our bullet at our firePoint, and addForce to it in its forward direction (since we align its forward with the front of our gun)
-            //could also call a function/set a flag IN our bullet that just has it move
-            //GameObject projectileIns = Instantiate(projectilePrefab, firePoint.transform.position, firePoint.transform.rotation);
+            float normalX = Util.GenerateBoxMullerPoint(0.5f, weaponAccuracy);
+            float normalY = Util.GenerateBoxMullerPoint(0.5f, weaponAccuracy);
+            Vector3 fireDirection;
+
+            Ray rayCrosshair = weaponCamera.ViewportPointToRay(new Vector3(normalX, normalY, 0f));
+            RaycastHit hit = new RaycastHit();
+            if (Physics.Raycast(rayCrosshair, out hit, 100, -1))
+            {
+                fireDirection = hit.point;
+            }
+            else
+            {
+                fireDirection = rayCrosshair.GetPoint(100);
+            }
+
+            fireDirection = fireDirection - firePoint.transform.position;
+
+
             GameObject projectileIns = ObjectPooler.instance.SpawnFromPool(projectilePrefab.name, firePoint.transform.position, firePoint.transform.rotation);
-            //projectileIns.GetComponent<Rigidbody>().AddForce(firePoint.transform.forward * fireSpeed);
-            projectileIns.GetComponent<Rigidbody>().velocity = firePoint.transform.forward * fireSpeed;
+
+            projectileIns.GetComponent<Rigidbody>().velocity = fireDirection.normalized * fireSpeed;
             DoShootEffect();
             currentAmmo--;
         }

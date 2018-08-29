@@ -239,6 +239,7 @@ MonoBehaviour:
   fireEffect: {fileID: 198073600260226020}
   projectilePrefab: {fileID: 1929637238537298, guid: 558421ab7c14a294eaf97bce6c5dbae5,
     type: 2}
+  weaponAccuracy: 0.005
   wpnGraphics: {fileID: 1178545628869482}
 --- !u!198 &198073600260226020
 ParticleSystem:
