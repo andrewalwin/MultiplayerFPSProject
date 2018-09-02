@@ -84,4 +84,50 @@ public class Bezier {
         }
         return result;
     }
-}
+
+    public static float CalculateCurveLength(List<Vector3> curvePoints)
+    {
+        float curveLength = 0f;
+        for(int i = 0; i < curvePoints.Count - 1; i++)
+        {
+            curveLength += Vector3.Distance(curvePoints[i], curvePoints[i + 1]);
+        }
+        return curveLength;
+    }
+
+    public static List<float> CalculateCurveSegments(List<Vector3> curvePoints)
+    {
+        List<float> segments = new List<float>();
+        for(int i = 0; i < curvePoints.Count - 1; i++)
+        {
+            segments.Add(Vector3.Distance(curvePoints[i], curvePoints[i + 1]));
+        }
+
+        return segments;
+    }
+
+    public static IEnumerator TraverseBezier(List<Vector3> curve, float curveLength, List<float> curveSegments, GameObject obj, float speed, float currentTravelDistance = 0f)
+    {
+        while (currentTravelDistance < curveLength)
+        {
+            float curveStep = Time.deltaTime * speed;
+            float nextTravelDistance = currentTravelDistance + curveStep;
+
+            float segmentLengthCounter = 0f;
+            for (int i = 0; i < curveSegments.Count; i++)
+            {
+                segmentLengthCounter += curveSegments[i];
+                if (segmentLengthCounter >= nextTravelDistance)
+                {
+                    float amount = Mathf.InverseLerp(curveSegments[i], curveSegments[(i + 1) % curveSegments.Count], nextTravelDistance - segmentLengthCounter);
+                    currentTravelDistance += nextTravelDistance - segmentLengthCounter;
+                    obj.transform.position = Vector3.Lerp(curve[i], curve[(i + 1) % curve.Count], amount);
+                    yield return null;
+                }
+            }
+
+            yield return null;
+        }
+    }
+    }
+

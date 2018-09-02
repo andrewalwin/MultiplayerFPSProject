@@ -17,30 +17,37 @@ public class BezierTest : MonoBehaviour {
     GameObject bezPoint4;
 
     [SerializeField]
+    GameObject bezObjectMove;
+
+    [SerializeField]
     LineRenderer lineRenderer;
 
 
     List<Vector3> pointTransforms;
     List<Vector3> curve;
+    public float curveLength;
+    public List<float> curveSegments;
 
     private float startTime;
     private float timer;
+    private bool coroutineStart;
 
+    public float speed =20f;
+    public float currentTravelDistance = 0f;
 
     // Update is called once per frame
     void Start() {
         startTime = Time.time;
         timer = Time.time;
+        coroutineStart = false;
 
     }
 
     private void Update()
     {
         timer += Time.deltaTime;
-        print(timer - startTime);
         if (timer - startTime > 5)
         {
-            print("QUAD");
             pointTransforms = new List<Vector3>();
             curve = new List<Vector3>();
             pointTransforms.Add(bezPoint1.transform.position);
@@ -58,7 +65,67 @@ public class BezierTest : MonoBehaviour {
                 }
             }
         }
+
+        if (bezObjectMove != null && timer - startTime > 6 && coroutineStart == false)
+        {
+            curveLength = Bezier.CalculateCurveLength(curve);
+            print(curveLength);
+            curveSegments = Bezier.CalculateCurveSegments(curve);
+
+            coroutineStart = true;
+
+        }
+
+        if (bezObjectMove != null && coroutineStart && timer - startTime > 7)
+        { 
+            bezTravel();
+            
+        }  
+        }
+
+    public void bezTravel()
+    {
+        while (currentTravelDistance <= curveLength)
+        {
+            float curveStep = Mathf.Min(Time.deltaTime * speed, curveLength - currentTravelDistance);
+            float nextTravelDistance = currentTravelDistance + curveStep;
+
+            float segmentLengthCounter = 0f;
+            for (int i = 0; i < curveSegments.Count; i++)
+            {
+                segmentLengthCounter += curveSegments[i];
+                if (segmentLengthCounter >= nextTravelDistance)
+                {
+                    float amount = Mathf.InverseLerp(0, curveSegments[i], nextTravelDistance - (segmentLengthCounter - curveSegments[i]));
+                    print("amount: " + amount);
+                    bezObjectMove.transform.position = Vector3.Lerp(curve[i], curve[Mathf.Min(curve.Count, i+1)], amount);
+
+                    currentTravelDistance += curveStep;
+                    print("currTra: " + currentTravelDistance);
+                    return;
+                }
+            }
+        }
     }
+}
+
+    //while (currentTravelDistance<curveLength)
+    //    {
+    //        float curveStep = Time.deltaTime * speed;
+    //float nextTravelDistance = currentTravelDistance + curveStep;
+
+    //float segmentLengthCounter = 0f;
+    //        for (int i = 0; i<curveSegments.Count; i++)
+    //        {
+    //            segmentLengthCounter += curveSegments[i];
+    //            if (segmentLengthCounter >= nextTravelDistance)
+    //            {
+    //                float amount = Mathf.InverseLerp(curveSegments[i], curveSegments[(i + 1) % curveSegments.Count], nextTravelDistance - segmentLengthCounter);
+    //currentTravelDistance += nextTravelDistance - segmentLengthCounter;
+    //                obj.transform.position = Vector3.Lerp(curve[i], curve[(i + 1) % curve.Count], amount);
+    //                yield return null;
+    //            }
+    //        }
 
 
 
@@ -72,8 +139,7 @@ public class BezierTest : MonoBehaviour {
         //    pointTransforms.Add(bezPoint4.transform.position);
         //    curve = Bezier.GenerateBezier(pointTransforms, 10);
         //}
-
-    }
+    
 
     //private void OnDrawGizmos()
     //{
