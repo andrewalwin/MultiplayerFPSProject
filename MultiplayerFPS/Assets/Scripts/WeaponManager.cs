@@ -85,7 +85,6 @@ public class WeaponManager : NetworkBehaviour {
     [Command]
     void CmdAssignWeaponAuthority(GameObject obj)
     {
-        Debug.Log((gameObject.GetComponent<NetworkIdentity>() == null) + " we have netID?");
         if (gameObject.GetComponent<NetworkIdentity>() != null)
         {
             if (connectionToClient.isReady)
@@ -112,6 +111,7 @@ public class WeaponManager : NetworkBehaviour {
         obj.transform.parent = parent.transform;
         obj.transform.localPosition = localPos;
         obj.transform.localRotation = localRot;
+        obj.GetComponent<Weapon>().SetWeaponCamera(weaponCamera);
 
         if (!isLocalPlayer)
         {
