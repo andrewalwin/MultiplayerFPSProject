@@ -22,7 +22,7 @@ TagManager:
   - Weapon
   - CollideableEnvironment
   - NonCollideableEnvironment
-  - 
+  - Player
   - 
   - 
   - 

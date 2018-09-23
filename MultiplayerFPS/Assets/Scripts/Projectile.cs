@@ -39,11 +39,11 @@ public class Projectile : MonoBehaviour {
         print(col.contacts[0].point);
         if (!col.gameObject.tag.ToLower().Contains("projectile"))
         {
-            Health collidedObjectHealth;
-            if ((collidedObjectHealth = col.gameObject.GetComponent<Health>()) != null)
-            {
-                collidedObjectHealth.Damage(damage);
-            }
+            //Health collidedObjectHealth;
+            //if ((collidedObjectHealth = col.gameObject.GetComponent<Health>()) != null)
+            //{
+            //    collidedObjectHealth.CmdDamage(damage);
+            //}
 
             if (projectileHitEffect != null)
             {

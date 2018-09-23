@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4121417713153678}
   - component: {fileID: 198575395772677846}
   - component: {fileID: 199854434441404016}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Smoke
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 4589402756496312}
   - component: {fileID: 33731149537020610}
   - component: {fileID: 23925255593896908}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Up
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -53,7 +53,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4033171112163592}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: FirePoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -70,7 +70,7 @@ GameObject:
   - component: {fileID: 4984534617992246}
   - component: {fileID: 198592181753443138}
   - component: {fileID: 199156807291188174}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: MuzzleFlash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 4412479961316144}
   - component: {fileID: 33007852774152636}
   - component: {fileID: 23138669484734922}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Trigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -104,7 +104,7 @@ GameObject:
   - component: {fileID: 4609503297439930}
   - component: {fileID: 33291091531920396}
   - component: {fileID: 23696636408710432}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Magazine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -121,8 +121,7 @@ GameObject:
   - component: {fileID: 4620425231321898}
   - component: {fileID: 33266344633777060}
   - component: {fileID: 23649262149239380}
-  - component: {fileID: 114707647518162942}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Glock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -138,7 +137,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4225922283345762}
   - component: {fileID: 114416877544185172}
-  m_Layer: 0
+  - component: {fileID: 114068475091624898}
+  - component: {fileID: 114550169383276840}
+  m_Layer: 11
   m_Name: Glock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -420,6 +421,38 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1327740130488442}
   m_Mesh: {fileID: 4300006, guid: e102eedcf6ecfa6428dc8f1e7e605c2b, type: 3}
+--- !u!114 &114068475091624898
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1887598873913650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 372142912, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SceneId:
+    m_Value: 0
+  m_AssetId:
+    i0: 124
+    i1: 181
+    i2: 38
+    i3: 119
+    i4: 52
+    i5: 141
+    i6: 237
+    i7: 100
+    i8: 8
+    i9: 64
+    i10: 73
+    i11: 90
+    i12: 157
+    i13: 178
+    i14: 244
+    i15: 82
+  m_ServerOnly: 0
+  m_LocalPlayerAuthority: 1
 --- !u!114 &114416877544185172
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -433,27 +466,41 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxAmmo: 24
   clipSize: 6
+  ammoCount: 0
+  currentAmmo: 0
   fireSpeed: 150
   fireDelay: 0.1
   firePoint: {fileID: 4033171112163592}
   fireEffect: {fileID: 198592181753443138}
   projectilePrefab: {fileID: 1929637238537298, guid: 558421ab7c14a294eaf97bce6c5dbae5,
     type: 2}
+  nextShot: 69.90735
+  canShoot: 0
+  reloading: 0
   weaponAccuracy: 0.005
   wpnGraphics: {fileID: 1769819920558138}
---- !u!114 &114707647518162942
+  netView: {fileID: 0}
+--- !u!114 &114550169383276840
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1769819920558138}
+  m_GameObject: {fileID: 1887598873913650}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d1c48dc11835fe41b852db29fbe6eb6, type: 3}
+  m_Script: {fileID: -1768714887, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  muzzleFlash: {fileID: 0}
-  hitEffectPrefab: {fileID: 0}
+  m_TransformSyncMode: 1
+  m_SendInterval: 0.1
+  m_SyncRotationAxis: 7
+  m_RotationSyncCompression: 0
+  m_SyncSpin: 0
+  m_MovementTheshold: 0.001
+  m_VelocityThreshold: 0.0001
+  m_SnapThreshold: 5
+  m_InterpolateRotation: 1
+  m_InterpolateMovement: 1
 --- !u!198 &198575395772677846
 ParticleSystem:
   m_ObjectHideFlags: 1

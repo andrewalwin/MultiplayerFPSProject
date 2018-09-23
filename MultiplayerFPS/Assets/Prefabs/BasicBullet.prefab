@@ -40,6 +40,7 @@ GameObject:
   - component: {fileID: 114073212629389312}
   - component: {fileID: 114944112477725192}
   - component: {fileID: 54629069110816474}
+  - component: {fileID: 114623964326292836}
   m_Layer: 0
   m_Name: BasicBullet
   m_TagString: Untagged
@@ -156,6 +157,38 @@ MonoBehaviour:
   knockbackAmount: 0.3
   projectileHitEffect: {fileID: 1604710860549184, guid: 68e2bb583d97d3d44888b07a99720580,
     type: 2}
+--- !u!114 &114623964326292836
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1929637238537298}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 372142912, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SceneId:
+    m_Value: 0
+  m_AssetId:
+    i0: 85
+    i1: 132
+    i2: 33
+    i3: 171
+    i4: 124
+    i5: 20
+    i6: 162
+    i7: 148
+    i8: 234
+    i9: 249
+    i10: 123
+    i11: 206
+    i12: 108
+    i13: 93
+    i14: 186
+    i15: 229
+  m_ServerOnly: 0
+  m_LocalPlayerAuthority: 0
 --- !u!114 &114944112477725192
 MonoBehaviour:
   m_ObjectHideFlags: 1

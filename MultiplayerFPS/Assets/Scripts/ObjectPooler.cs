@@ -17,14 +17,13 @@ public class ObjectPooler : MonoBehaviour {
 
     public static ObjectPooler instance;
 
-    void Awake() {
+    private void Awake() {
         if (instance == null)
         {
             instance = this;
         }
         else if (instance != null)
         {
-            Debug.LogError("ObjectPooler already exists");
             Destroy(gameObject);
         }
         DontDestroyOnLoad(gameObject);

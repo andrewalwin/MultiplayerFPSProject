@@ -154,7 +154,7 @@ AudioListener:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 319374717}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!124 &319374719
 Behaviour:
   m_ObjectHideFlags: 0
@@ -562,6 +562,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1711637313}
   - component: {fileID: 1711637312}
+  - component: {fileID: 1711637314}
   m_Layer: 0
   m_Name: _GameManager
   m_TagString: Untagged
@@ -596,6 +597,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1711637314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1711637311}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 253fe7877df2b1c46a365f27988c636a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pools: []
 --- !u!1001 &1760383167
 Prefab:
   m_ObjectHideFlags: 0
@@ -635,10 +648,9 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114443324105297924, guid: a7d82a008c3e2e44898867e8971520a1,
-        type: 2}
-      propertyPath: m_AutoCreatePlayer
-      value: 1
+    - target: {fileID: 1759738777983668, guid: a7d82a008c3e2e44898867e8971520a1, type: 2}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a7d82a008c3e2e44898867e8971520a1, type: 2}

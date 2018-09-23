@@ -21,8 +21,6 @@ GameObject:
   - component: {fileID: 4266905323160960}
   - component: {fileID: 114443324105297924}
   - component: {fileID: 114520638378383698}
-  - component: {fileID: 114424035200190696}
-  - component: {fileID: 114045261680746808}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -43,28 +41,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114045261680746808
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1759738777983668}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &114424035200190696
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1759738777983668}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114443324105297924
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -84,15 +60,18 @@ MonoBehaviour:
   m_RunInBackground: 1
   m_ScriptCRCCheck: 1
   m_MaxDelay: 0.01
-  m_LogLevel: 2
-  m_PlayerPrefab: {fileID: 1899142189552158, guid: 4c4a4ff60a8627d47952eed453a47feb,
+  m_LogLevel: 0
+  m_PlayerPrefab: {fileID: 1716121588963058, guid: 1300c7811626ac54da57a951e57a41c7,
     type: 2}
   m_AutoCreatePlayer: 1
   m_PlayerSpawnMethod: 1
-  m_OfflineScene: Lobby
+  m_OfflineScene: FakeLobby
   m_OnlineScene: MainLevel1
   m_SpawnPrefabs:
-  - {fileID: 1899142189552158, guid: 4c4a4ff60a8627d47952eed453a47feb, type: 2}
+  - {fileID: 1716121588963058, guid: 1300c7811626ac54da57a951e57a41c7, type: 2}
+  - {fileID: 1887598873913650, guid: 7cb52677348ded640840495a9db2f452, type: 2}
+  - {fileID: 1674541337278282, guid: e4a9e8eb20eb2444da327e916172507c, type: 2}
+  - {fileID: 1929637238537298, guid: 558421ab7c14a294eaf97bce6c5dbae5, type: 2}
   m_CustomConfig: 0
   m_MaxConnections: 4
   m_ConnectionConfig:
@@ -135,7 +114,7 @@ MonoBehaviour:
     m_MaxTimerTimeout: 12000
     m_MinNetSimulatorTimeout: 1
     m_MaxNetSimulatorTimeout: 12000
-  m_Channels: 
+  m_Channels: 0500000000000000
   m_UseWebSockets: 0
   m_UseSimulator: 0
   m_SimulatedLatency: 1
@@ -147,7 +126,7 @@ MonoBehaviour:
   matchName: default
   matchSize: 4
   isNetworkActive: 0
-  matchMaker: {fileID: 114045261680746808}
+  matchMaker: {fileID: 0}
 --- !u!114 &114520638378383698
 MonoBehaviour:
   m_ObjectHideFlags: 1

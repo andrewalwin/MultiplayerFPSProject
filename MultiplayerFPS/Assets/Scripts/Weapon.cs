@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 [System.Serializable]
-public class Weapon : MonoBehaviour{
+public class Weapon : NetworkBehaviour{
 
     //max ammo
     [SerializeField]
@@ -14,9 +15,9 @@ public class Weapon : MonoBehaviour{
     public int clipSize;
 
     //how much total ammo is left
-    private int ammoCount;
+    public int ammoCount;
     //how much loaded ammo is left
-    private int currentAmmo;
+    public int currentAmmo;
 
     //how fast we launch projectiles
     [SerializeField]
@@ -24,11 +25,11 @@ public class Weapon : MonoBehaviour{
 
     //how long between shots
     [SerializeField]
-    private float fireDelay = .1f;
+    public float fireDelay = .1f;
 
     //where to fire from
     [SerializeField]
-    private Transform firePoint;
+    public Transform firePoint;
 
     //effect when we fire our gun
     [SerializeField]
@@ -39,35 +40,51 @@ public class Weapon : MonoBehaviour{
     public GameObject projectilePrefab;
 
     //for keeping track of when we can fire
-    private float nextShot = 0.0f;
+    public float nextShot = 0.0f;
 
     //whether or not we can shoot
-    private bool canShoot;
+    public bool canShoot;
 
     //whether or not we're in the middle of reloading
-    private bool reloading;
+    public bool reloading;
 
     [SerializeField]
     private float weaponAccuracy;
 
+    [SerializeField]
     private Camera weaponCamera;
 
     [SerializeField]
     public GameObject wpnGraphics;
 
+    [SerializeField]
+    private NetworkIdentity netView;
+
     void Start()
     {
-        weaponCamera = GetComponentInParent<Camera>();
+        netView = Util.FindParentWithTag(this.gameObject, "Player").GetComponent<NetworkIdentity>();
+        //netView = GetComponent<NetworkIdentity>();
+        if (!hasAuthority)
+        {
+            Debug.Log("NOT LOCAL PLAYER");
+            return;
+        }
+        //weaponCamera = GetComponentInParent<Camera>();
 
         currentAmmo = clipSize;
         ammoCount = maxAmmo - clipSize;
 
         canShoot = true;
         reloading = false;
+        nextShot = 0f;
     }
 
     void Update()
     {
+        if (!hasAuthority)
+        {
+            return;
+        }
         //check if we can shoot
         if (Input.GetKey(KeyCode.Mouse0) && (Time.time > nextShot))
         {
@@ -76,6 +93,7 @@ public class Weapon : MonoBehaviour{
             //if we have enough ammo, then shoot
             if (currentAmmo > 0 && firePoint != null && canShoot)
             {
+                Debug.Log("SHOOTING");
                 Shoot();
             }
             //if we're out of ammo, try to reload
@@ -90,6 +108,7 @@ public class Weapon : MonoBehaviour{
             }
         }
     }
+
 
     public void Shoot()
     {
@@ -114,16 +133,35 @@ public class Weapon : MonoBehaviour{
 
 
             GameObject projectileIns = ObjectPooler.instance.SpawnFromPool(projectilePrefab.name, firePoint.transform.position, firePoint.transform.rotation);
-
-            projectileIns.GetComponent<Rigidbody>().velocity = fireDirection.normalized * fireSpeed;
+            Rigidbody projectileRb = projectileIns.GetComponent<Rigidbody>();
+            projectileRb.velocity = fireDirection.normalized * fireSpeed;
             DoShootEffect();
             currentAmmo--;
+
+            CmdShoot(projectileIns, projectileIns.transform.position, projectileIns.transform.rotation, projectileRb.velocity);
+        }
+    }
+
+    [Command]
+    private void CmdShoot(GameObject obj, Vector3 position, Quaternion rotation, Vector3 velocity)
+    {
+        RpcShoot(obj, position, rotation, velocity);
+    }
+
+    [ClientRpc]
+    private void RpcShoot(GameObject obj, Vector3 position, Quaternion rotation, Vector3 velocity)
+    {
+        if (!hasAuthority)
+        {
+            GameObject projectileIns = ObjectPooler.instance.SpawnFromPool(projectilePrefab.name, position, rotation);
+            Debug.Log(projectileIns == null);
+            projectileIns.GetComponent<Rigidbody>().velocity = velocity;
         }
     }
 
     private void DoShootEffect()
     {
-        if(fireEffect != null)
+        if(fireEffect != null && hasAuthority)
         {
             ParticleSystem pS = fireEffect;
             if (!pS.isPlaying) pS.Play();
@@ -165,5 +203,10 @@ public class Weapon : MonoBehaviour{
     public int GetAmmoCount()
     {
         return ammoCount;
+    }
+
+    public void SetWeaponCamera(Camera cam)
+    {
+        weaponCamera = cam;
     }
 }

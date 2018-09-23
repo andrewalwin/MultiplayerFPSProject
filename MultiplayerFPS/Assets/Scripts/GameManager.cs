@@ -14,14 +14,15 @@ public class GameManager : MonoBehaviour {
     
     private void Awake()
     {
-        if (instance != null)
-        {
-           Debug.LogError("More than one GameManager present in scene.");
-        }
-        else
+        if (instance == null)
         {
             instance = this;
         }
+        else if (instance != null)
+        {
+            Destroy(gameObject);
+        }
+        DontDestroyOnLoad(gameObject);
     }
     public void SetSceneCameraActive(bool isActive)
     {
