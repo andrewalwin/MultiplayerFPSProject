@@ -122,10 +122,11 @@ public class ObjectPooler : MonoBehaviour {
         //re-pool an object
         public void RePool(GameObject obj, string name)
         {
-                if (poolDictionary.ContainsKey(name))
-                {
-                    poolDictionary[name].Enqueue(obj);
-                }
+            if (poolDictionary.ContainsKey(name))
+            {
+            obj.transform.parent = null;
+                poolDictionary[name].Enqueue(obj);
+            }
         }
     }
 

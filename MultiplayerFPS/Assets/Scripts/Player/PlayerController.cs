@@ -57,5 +57,10 @@ public class PlayerController: MonoBehaviour
         {
             motor.Jump(jumpForce);
         }
+
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            GetComponent<Health>().Damage(10);
+        }
     }
 }

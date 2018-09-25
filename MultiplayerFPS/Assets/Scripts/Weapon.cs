@@ -60,6 +60,7 @@ public class Weapon : NetworkBehaviour{
     [SerializeField]
     private NetworkIdentity netView;
 
+
     void Start()
     {
         netView = Util.FindParentWithTag(this.gameObject, "Player").GetComponent<NetworkIdentity>();
@@ -88,12 +89,12 @@ public class Weapon : NetworkBehaviour{
         //check if we can shoot
         if (Input.GetKey(KeyCode.Mouse0) && (Time.time > nextShot))
         {
-            Debug.Log(currentAmmo + "/" + ammoCount);
+            //Debug.Log(currentAmmo + "/" + ammoCount);
             nextShot = Time.time + fireDelay;
             //if we have enough ammo, then shoot
             if (currentAmmo > 0 && firePoint != null && canShoot)
             {
-                Debug.Log("SHOOTING");
+                //Debug.Log("SHOOTING");
                 Shoot();
             }
             //if we're out of ammo, try to reload
@@ -102,7 +103,7 @@ public class Weapon : NetworkBehaviour{
                 canShoot = false;
                 if (ammoCount > 0 && !reloading)
                 {
-                    Debug.Log("RELOADING");
+                    //Debug.Log("RELOADING");
                     StartCoroutine("Reload", 0.5f);
                 }
             }
@@ -135,6 +136,7 @@ public class Weapon : NetworkBehaviour{
             GameObject projectileIns = ObjectPooler.instance.SpawnFromPool(projectilePrefab.name, firePoint.transform.position, firePoint.transform.rotation);
             Rigidbody projectileRb = projectileIns.GetComponent<Rigidbody>();
             projectileRb.velocity = fireDirection.normalized * fireSpeed;
+            projectileIns.GetComponent<Projectile>().dealDamage = false;
             DoShootEffect();
             currentAmmo--;
 
@@ -151,10 +153,9 @@ public class Weapon : NetworkBehaviour{
     [ClientRpc]
     private void RpcShoot(GameObject obj, Vector3 position, Quaternion rotation, Vector3 velocity)
     {
-        if (!hasAuthority)
+        if(!hasAuthority)
         {
             GameObject projectileIns = ObjectPooler.instance.SpawnFromPool(projectilePrefab.name, position, rotation);
-            Debug.Log(projectileIns == null);
             projectileIns.GetComponent<Rigidbody>().velocity = velocity;
         }
     }

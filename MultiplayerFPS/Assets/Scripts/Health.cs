@@ -25,16 +25,20 @@ public class Health : NetworkBehaviour {
     public void Damage(int damageAmount)
     {
         CmdDamage(damageAmount);
+        if (healthChanged != null)
+        {
+            healthChanged();
+        }
     }
 
     public void Damage(float damageAmount)
     {
         int roundedDamage = (int)Mathf.Ceil(damageAmount);
-        CmdDamage(roundedDamage);
+        Damage(roundedDamage);
     }
     
     [Command]
-    private void CmdDamage(int damageAmount)
+    public void CmdDamage(int damageAmount)
     {
         RpcDamage(damageAmount);
     }
@@ -43,7 +47,6 @@ public class Health : NetworkBehaviour {
     private void RpcDamage(int damageAmount)
     {
         currentHealth = Mathf.Max(0, currentHealth - damageAmount);
-        healthChanged();
     }
 
     public void Recover(int recoverAmount)

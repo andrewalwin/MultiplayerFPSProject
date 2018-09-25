@@ -468,16 +468,17 @@ MonoBehaviour:
   clipSize: 6
   ammoCount: 0
   currentAmmo: 0
-  fireSpeed: 150
+  fireSpeed: 10
   fireDelay: 0.1
   firePoint: {fileID: 4033171112163592}
   fireEffect: {fileID: 198592181753443138}
   projectilePrefab: {fileID: 1929637238537298, guid: 558421ab7c14a294eaf97bce6c5dbae5,
     type: 2}
-  nextShot: 69.90735
+  nextShot: 0
   canShoot: 0
   reloading: 0
   weaponAccuracy: 0.005
+  weaponCamera: {fileID: 0}
   wpnGraphics: {fileID: 1769819920558138}
   netView: {fileID: 0}
 --- !u!114 &114550169383276840
