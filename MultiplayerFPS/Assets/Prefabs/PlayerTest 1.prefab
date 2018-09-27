@@ -406,7 +406,9 @@ MonoBehaviour:
   weaponHolder: {fileID: 4180537587533310}
   mainCamera: {fileID: 20619897994648768}
   weaponCamera: {fileID: 20098540650001604}
-  weaponPrefabList: []
+  weaponPrefabList:
+  - {fileID: 1887598873913650, guid: 7cb52677348ded640840495a9db2f452, type: 2}
+  - {fileID: 1674541337278282, guid: e4a9e8eb20eb2444da327e916172507c, type: 2}
   prefabWeapon: {fileID: 1887598873913650, guid: 7cb52677348ded640840495a9db2f452,
     type: 2}
 --- !u!114 &114356071538182564
