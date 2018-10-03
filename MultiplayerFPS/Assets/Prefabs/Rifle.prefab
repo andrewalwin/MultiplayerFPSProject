@@ -220,7 +220,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TransformSyncMode: 1
-  m_SendInterval: 0.1
+  m_SendInterval: 0.0625
   m_SyncRotationAxis: 7
   m_RotationSyncCompression: 0
   m_SyncSpin: 0
@@ -270,7 +270,6 @@ MonoBehaviour:
   weaponAccuracy: 0.005
   weaponCamera: {fileID: 0}
   wpnGraphics: {fileID: 1178545628869482}
-  netView: {fileID: 0}
 --- !u!114 &114962590817309118
 MonoBehaviour:
   m_ObjectHideFlags: 1

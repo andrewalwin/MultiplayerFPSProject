@@ -8,9 +8,9 @@ public class WeaponManager : NetworkBehaviour {
     [SerializeField]
     private string weaponLayerName = "Weapon";
 
-    //position to put our weapon
     [SerializeField]
     private Transform weaponHolder;
+
     [SerializeField]
     private Camera mainCamera;
     [SerializeField]
@@ -53,11 +53,6 @@ public class WeaponManager : NetworkBehaviour {
             }
             CmdSpawnAllWeapons();
         }
-        //currentWeapon = prefabWeapon.GetComponent<Weapon>();
-        //prefabWeapon.gameObject.transform.SetParent(weaponHolder);
-        //Util.SetLayerRecursively(prefabWeapon, LayerMask.NameToLayer(weaponLayerName));
-        //objectPooler.AddPool(currentWeapon.projectilePrefab, currentWeapon.projectilePrefab.name, currentWeapon.clipSize);        
-        //weaponInsList[currentWeaponIndex].SetActive(true);
     }
 
     private void Update()
@@ -140,16 +135,18 @@ public class WeaponManager : NetworkBehaviour {
                     currentWeapon = wepIns.GetComponent<Weapon>();
                     currentWeapon.SetWeaponCamera(weaponCamera);
                     NetworkServer.SpawnWithClientAuthority(wepIns, gameObject);
-                    RpcSpawnWeapon(wepIns, wepIns.transform.localPosition, wepIns.transform.localRotation, wepIns.transform.parent.gameObject);
+                    RpcSpawnWeapon(wepIns, wepIns.transform.localPosition, wepIns.transform.localRotation, wepIns.transform.parent.gameObject, gameObject.GetComponent<NetworkIdentity>().netId);
                 }
     }
 
     [ClientRpc]
-    void RpcSpawnWeapon(GameObject obj, Vector3 localPos, Quaternion localRot, GameObject parent)
+    void RpcSpawnWeapon(GameObject obj, Vector3 localPos, Quaternion localRot, GameObject parent, NetworkInstanceId parentId)
     {
-        obj.transform.parent = parent.transform;
-        obj.transform.localPosition = localPos;
-        obj.transform.localRotation = localRot;
+        //obj.transform.parent = ClientScene.FindLocalObject(parentId).transform;
+        Debug.Log("/" + ClientScene.FindLocalObject(parentId).name + "/Camera" + "/WeaponHolder");
+        obj.transform.parent = GameObject.Find("/" + ClientScene.FindLocalObject(parentId).name + "/Camera" + "/WeaponHolder").transform;
+        obj.transform.localPosition = Vector3.zero;
+        obj.transform.localRotation = Quaternion.identity;
         obj.GetComponent<Weapon>().SetWeaponCamera(weaponCamera);
 
         if (!isLocalPlayer)
@@ -176,7 +173,7 @@ public class WeaponManager : NetworkBehaviour {
                         currentWeapon = wepIns.GetComponent<Weapon>();
                         currentWeapon.SetWeaponCamera(weaponCamera);
                         NetworkServer.SpawnWithClientAuthority(wepIns, gameObject);
-                        RpcSpawnWeapon(wepIns, wepIns.transform.localPosition, wepIns.transform.localRotation, wepIns.transform.parent.gameObject);
+                        RpcSpawnWeapon(wepIns, wepIns.transform.localPosition, wepIns.transform.localRotation, wepIns.transform.parent.gameObject, gameObject.GetComponent<NetworkIdentity>().netId);
                         UnequipWeapon(i);
                     }
                 }
@@ -216,100 +213,6 @@ public class WeaponManager : NetworkBehaviour {
     {
         swappedWeapon.SetActive(false);
     }
-
-
-    [Command]
-    void CmdAssignWeaponAuthority(GameObject obj)
-    {
-        if (gameObject.GetComponent<NetworkIdentity>() != null)
-        {
-            if (connectionToClient.isReady)
-            {
-                for (int i = 0; i < weaponPrefabList.Length; i++)
-                {
-                    GameObject wepIns = (GameObject)Instantiate(weaponPrefabList[i], weaponHolder.position, weaponHolder.rotation, weaponHolder);
-                    weaponInsList[i] = wepIns;
-                    wepIns.transform.parent = gameObject.transform;
-                    currentWeaponIns = wepIns;
-                    currentWeapon = wepIns.GetComponent<Weapon>();
-                    currentWeapon.SetWeaponCamera(weaponCamera);
-                    NetworkServer.SpawnWithClientAuthority(wepIns, gameObject);
-                    RpcSyncWeaponOnce(wepIns, wepIns.transform.localPosition, wepIns.transform.localRotation, wepIns.transform.parent.gameObject);
-                }
-            }
-            else
-            {
-                StartCoroutine(WaitForReadyAuthority(obj));
-            }
-            //obj.GetComponent<NetworkIdentity>().AssignClientAuthority(this.GetComponent<NetworkIdentity>().connectionToClient);
-        }
-    }
-
-    [ClientRpc]
-    void RpcSyncWeaponOnce(GameObject obj, Vector3 localPos, Quaternion localRot, GameObject parent)
-    {
-        obj.transform.parent = parent.transform;
-        obj.transform.localPosition = localPos;
-        obj.transform.localRotation = localRot;
-        obj.GetComponent<Weapon>().SetWeaponCamera(weaponCamera);
-
-        if (!isLocalPlayer)
-        {
-            Util.SetLayerRecursively(obj, 0);
-        }
-    }
-
-    void EquipWeapon3(GameObject obj)
-    {
-        CmdEquipWeapon3(obj);
-    }
-
-    [Command]
-    void CmdEquipWeapon3(GameObject obj)
-    {
-        if (connectionToClient.isReady)
-        {
-            GameObject weaponIns = (GameObject)Instantiate(prefabWeapon, weaponHolder.position, weaponHolder.rotation);
-            weaponIns.transform.SetParent(weaponHolder);
-            NetworkServer.SpawnWithClientAuthority(weaponIns, connectionToClient);
-            currentWeapon = prefabWeapon.GetComponent<Weapon>();
-            Util.SetLayerRecursively(prefabWeapon, LayerMask.NameToLayer(weaponLayerName));
-            RpcEquipWeapon3(prefabWeapon, weaponHolder.gameObject);
-        }
-        else
-        {
-            StartCoroutine(WaitForReadyEquip(obj));
-        }
-    }
-
-    [ClientRpc]
-    void RpcEquipWeapon3(GameObject obj, GameObject parent)
-    {
-        if (!NetworkServer.active)
-        {
-            GameObject weaponIns = (GameObject)Instantiate(obj, weaponHolder.position, weaponHolder.rotation);
-            weaponIns.transform.SetParent(parent.transform);
-        }
-    }
-
-    IEnumerator WaitForReadyEquip(GameObject obj)
-    {
-        while (!connectionToClient.isReady)
-        {
-            yield return new WaitForSeconds(0.25f);
-        }
-        EquipWeapon3(obj);
-    }
-
-    IEnumerator WaitForReadyAuthority(GameObject obj)
-    {
-        while (!connectionToClient.isReady)
-        {
-            yield return new WaitForSeconds(0.25f);
-        }
-        CmdAssignWeaponAuthority(obj);
-    }
-
 
     private void FixedUpdate()
     {

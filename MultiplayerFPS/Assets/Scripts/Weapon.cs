@@ -57,14 +57,8 @@ public class Weapon : NetworkBehaviour{
     [SerializeField]
     public GameObject wpnGraphics;
 
-    [SerializeField]
-    private NetworkIdentity netView;
-
-
     void Start()
     {
-        netView = Util.FindParentWithTag(this.gameObject, "Player").GetComponent<NetworkIdentity>();
-        //netView = GetComponent<NetworkIdentity>();
         if (!hasAuthority)
         {
             Debug.Log("NOT LOCAL PLAYER");

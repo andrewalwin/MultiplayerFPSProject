@@ -11,6 +11,7 @@ public class PlayerMotor : MonoBehaviour
 
     private Vector3 velocity = Vector3.zero;
     private Vector3 rotation = Vector3.zero;
+    private Vector3 currentDirection;
 
     private float cameraRotationX = 0f;
     private float currentCameraRotationX = 0f;
@@ -19,7 +20,7 @@ public class PlayerMotor : MonoBehaviour
     private float cameraRotationLimit = 85f;
 
     private Rigidbody rb;
-    private BoxCollider playerCollider;
+    private CapsuleCollider playerCollider;
 
     [SerializeField]
     private LayerMask ignoreCollisionsLayer;
@@ -32,12 +33,14 @@ public class PlayerMotor : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        playerCollider = GetComponentInParent<BoxCollider>();
+        currentDirection = transform.position;
+        playerCollider = GetComponentInParent<CapsuleCollider>();
         wepManager = GetComponent<WeaponManager>();
     }
 
     void FixedUpdate()
     {
+        currentDirection = (transform.position - currentDirection).normalized;
         //Vector3 ray = transform.TransformDirection(Vector3.down) * (playerCollider.bounds.extents.y + 0.1f);
         //Debug.DrawRay(playerCollider.transform.TransformPoint(Vector3.zero), ray, Color.green, 2, false);
         PerformMovement();
@@ -54,19 +57,16 @@ public class PlayerMotor : MonoBehaviour
     {
         if (velocity != Vector3.zero)
         {
-            //movePosition does collision checks on the way
-            rb.MovePosition(rb.position + velocity * Time.fixedDeltaTime);
+                Vector3 movePosition = rb.position + velocity * Time.fixedDeltaTime;
+                rb.MovePosition(movePosition);
         }
     }
 
     public void Jump(float jumpForce)
     {
-        Debug.Log("GROUNDED? : " + IsGrounded());
         if (IsGrounded())
         {
-            Debug.Log("JUMPING");
-            //velocity += new Vector3(0, jumpForce * 10 , 0);
-            rb.AddForce((Vector3.up * jumpForce), ForceMode.Impulse);
+            rb.AddForce((Vector3.up * jumpForce), ForceMode.VelocityChange);
         }
     }
 
@@ -105,8 +105,7 @@ public class PlayerMotor : MonoBehaviour
 
     public bool IsGrounded()
     {
-        Debug.Log(transform.position.y + ", " + distanceToGround + ", " + Physics.defaultContactOffset);
-        return Physics.Raycast(playerCollider.transform.TransformPoint(Vector3.zero), Vector3.down, (Physics.defaultContactOffset));
+        return Physics.Raycast(playerCollider.transform.TransformPoint(Vector3.zero), Vector3.down, (0.15f));
     }
 
 }

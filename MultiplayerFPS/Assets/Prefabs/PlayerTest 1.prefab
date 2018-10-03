@@ -69,6 +69,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4476458506012382}
   - component: {fileID: 54742146572871492}
+  - component: {fileID: 136237076784326218}
   - component: {fileID: 65955995465750158}
   - component: {fileID: 114132603138504380}
   - component: {fileID: 114562081438252026}
@@ -308,7 +309,7 @@ BoxCollider:
   m_GameObject: {fileID: 1716121588963058}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 0.59611744, y: 1.2009685, z: 0.6133808}
   m_Center: {x: 0.0011669695, y: 0.593541, z: -0.0023918748}
@@ -404,6 +405,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponLayerName: Weapon
   weaponHolder: {fileID: 4180537587533310}
+  weaponHolderPrefab: {fileID: 1601686977407726}
+  weaponHolderPosition: {x: 0, y: 0, z: 0}
   mainCamera: {fileID: 20619897994648768}
   weaponCamera: {fileID: 20098540650001604}
   weaponPrefabList:
@@ -455,7 +458,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TransformSyncMode: 3
-  m_SendInterval: 0.125
+  m_SendInterval: 0.0625
   m_SyncRotationAxis: 2
   m_RotationSyncCompression: 0
   m_SyncSpin: 0
@@ -502,3 +505,16 @@ Behaviour:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1314547942311682}
   m_Enabled: 1
+--- !u!136 &136237076784326218
+CapsuleCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1716121588963058}
+  m_Material: {fileID: 13400000, guid: 993d4f23bfd9cc245b0caef651eeb11c, type: 2}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.30725148
+  m_Height: 1.2753296
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.58258057, z: -0.004668027}
