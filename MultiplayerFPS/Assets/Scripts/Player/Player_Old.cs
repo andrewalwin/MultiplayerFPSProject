@@ -136,8 +136,6 @@ public class Player_Old : NetworkBehaviour {
             GetComponent<PlayerSetup>().playerUIInstance.SetActive(false);
         }
 
-        Debug.Log(transform.name + " IS DAED");
-
         //CALL RESPAWN
         StartCoroutine(Respawn());
     }
@@ -147,7 +145,6 @@ public class Player_Old : NetworkBehaviour {
         //call our match settings from our instance of the game manager
         yield return new WaitForSeconds(3f);
 
-        //networkmanager.singleton is the instance of the network manager in our scene
         Transform _spawnPoint = NetworkManager.singleton.GetStartPosition(); //returns one of the spawn points in our network manager
         transform.position = _spawnPoint.position;
         transform.rotation = _spawnPoint.rotation;

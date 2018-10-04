@@ -19,7 +19,8 @@ public class Health : NetworkBehaviour {
 
     private void OnEnable()
     {
-        currentHealth = maxHealth;
+        //currentHealth = maxHealth;
+        Recover(maxHealth);
     }
 
     public void Damage(int damageAmount)
@@ -70,7 +71,10 @@ public class Health : NetworkBehaviour {
     private void RpcRecover(int recoverAmount)
     {
         currentHealth = Mathf.Max(maxHealth, currentHealth + recoverAmount);
-        healthChanged();
+        if (healthChanged != null)
+        {
+            healthChanged();
+        }
     }
 
     public int GetCurrentHealth()

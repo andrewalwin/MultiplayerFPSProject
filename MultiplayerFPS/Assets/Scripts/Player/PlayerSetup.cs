@@ -52,7 +52,7 @@ public class PlayerSetup : NetworkBehaviour
                 ui.SetPlayer(GetComponent<Player>());
             }
             //make sure to call setup here or else its called for all players when a new player joins
-            GetComponent<Player>().SetupPlayer();
+            //GetComponent<Player>().BroadcastPlayer();
         }
 
     }
@@ -76,7 +76,7 @@ public class PlayerSetup : NetworkBehaviour
         GameManager.RegisterPlayer(_netID, _player);
     }
 
-    void DisableComponents()
+    public void DisableComponents()
     {
         for (int i = 0; i < componentsToDisable.Length; i++)
         {

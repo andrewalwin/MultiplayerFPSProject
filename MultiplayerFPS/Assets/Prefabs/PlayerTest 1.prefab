@@ -405,8 +405,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponLayerName: Weapon
   weaponHolder: {fileID: 4180537587533310}
-  weaponHolderPrefab: {fileID: 1601686977407726}
-  weaponHolderPosition: {x: 0, y: 0, z: 0}
   mainCamera: {fileID: 20619897994648768}
   weaponCamera: {fileID: 20098540650001604}
   weaponPrefabList:
@@ -490,13 +488,19 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1716121588963058}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ea3f9da1585fc8d45b479dbfaa9e1eb0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  disableOnDeath: []
-  disableGameObjectsOnDeath: []
+  disableOnDeath:
+  - {fileID: 114656767600427296}
+  - {fileID: 114327029795624356}
+  - {fileID: 114345007976938638}
+  - {fileID: 114356071538182564}
+  disableGameObjectsOnDeath:
+  - {fileID: 1742617892985472}
+  - {fileID: 1314547942311682}
   wasEnabled: 
 --- !u!124 &124642068314887728
 Behaviour:

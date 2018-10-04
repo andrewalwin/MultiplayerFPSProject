@@ -69,12 +69,25 @@ public class WeaponManager : NetworkBehaviour {
         }
     }
 
+    private void OnDisable()
+    {
+        for(int i = 0; i < weaponInsList.Length; i++)
+        {
+            UnequipWeapon(i);
+        }
+    }
+
+    public void Respawn()
+    {
+        EquipWeapon(0);
+    }
+
     void EquipWeapon(int weaponInsIndex)
     {
         if(weaponInsList[weaponInsIndex] == null)
         {
-            SpawnWeapon(weaponInsIndex);
-            EquipWeapon(weaponInsIndex);
+            SpawnWeapon(weaponInsIndex, true);
+            //EquipWeapon(weaponInsIndex);
         }
         else
         {
@@ -117,26 +130,29 @@ public class WeaponManager : NetworkBehaviour {
         equippedWeapon.SetActive(false);
     }
 
-    void SpawnWeapon(int weaponPrefabIndex)
+    void SpawnWeapon(int weaponPrefabIndex, bool doEquipWeapon)
     {
-        //NEED to add the parenting to the weaponHolder, as well as code to spawn the weaponHolder. Atm it spawns middle of the screen and wont rotate
-        CmdSpawnWeapon(weaponPrefabIndex);
+        CmdSpawnWeapon(weaponPrefabIndex, doEquipWeapon);
     }
 
     [Command]
-    void CmdSpawnWeapon(int weaponPrefabIndex)
+    void CmdSpawnWeapon(int weaponPrefabIndex, bool doEquipWeapon)
     {
                 if (weaponPrefabList[weaponPrefabIndex] != null)
                 {
                     GameObject wepIns = (GameObject)Instantiate(weaponPrefabList[weaponPrefabIndex], weaponHolder.position, weaponHolder.rotation, weaponHolder);
                     weaponInsList[weaponPrefabIndex] = wepIns;
-                    wepIns.transform.parent = gameObject.transform;
+                    wepIns.transform.parent = weaponHolder;
                     currentWeaponIns = wepIns;
                     currentWeapon = wepIns.GetComponent<Weapon>();
                     currentWeapon.SetWeaponCamera(weaponCamera);
                     NetworkServer.SpawnWithClientAuthority(wepIns, gameObject);
                     RpcSpawnWeapon(wepIns, wepIns.transform.localPosition, wepIns.transform.localRotation, wepIns.transform.parent.gameObject, gameObject.GetComponent<NetworkIdentity>().netId);
                 }
+        if (doEquipWeapon)
+        {
+            EquipWeapon(weaponPrefabIndex);
+        }
     }
 
     [ClientRpc]
@@ -168,7 +184,7 @@ public class WeaponManager : NetworkBehaviour {
                     {
                         GameObject wepIns = (GameObject)Instantiate(weaponPrefabList[i], weaponHolder.position, weaponHolder.rotation, weaponHolder);
                         weaponInsList[i] = wepIns;
-                        wepIns.transform.parent = gameObject.transform;
+                        wepIns.transform.parent = weaponHolder;
                         currentWeaponIns = wepIns;
                         currentWeapon = wepIns.GetComponent<Weapon>();
                         currentWeapon.SetWeaponCamera(weaponCamera);
