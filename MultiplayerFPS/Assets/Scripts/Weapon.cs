@@ -57,14 +57,12 @@ public class Weapon : NetworkBehaviour{
     [SerializeField]
     public GameObject wpnGraphics;
 
-    void Start()
+    public void Start()
     {
         if (!hasAuthority)
         {
-            Debug.Log("NOT LOCAL PLAYER");
             return;
         }
-        //weaponCamera = GetComponentInParent<Camera>();
 
         currentAmmo = clipSize;
         ammoCount = maxAmmo - clipSize;

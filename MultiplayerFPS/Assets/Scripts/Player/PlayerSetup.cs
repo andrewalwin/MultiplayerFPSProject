@@ -28,13 +28,11 @@ public class PlayerSetup : NetworkBehaviour
     {
         if (!isLocalPlayer)
         {
-            Debug.Log("NOTLOCAL PLAYER JOINED " + gameObject.name);
             DisableComponents();
             AssignRemoteLayer();
         }
         else
         {
-            Debug.Log("LOCAL PLAYER JOINED " + gameObject.name);
             //disable player graphics for local player
             SetLayerRecursively(playerGraphics, LayerMask.NameToLayer(dontDrawLayerName));
 

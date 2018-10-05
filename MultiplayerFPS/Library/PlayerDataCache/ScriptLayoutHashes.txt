@@ -196,7 +196,7 @@ a56dbd4585d573733285a94e05244690 Assembly-CSharp.dll:.Weapon
 0ad469aca31264c6140b1e503c43ab6b Assembly-CSharp-firstpass.dll:UnityStandardAssets.Utility.TimedObjectDestructor
 1e4106c5a2aab0dbf6c1cc571ada0a7b Assembly-CSharp.dll:.PlayerSetup
 f4b175ffc1eeca85d2783436b4c764a7 Assembly-CSharp-firstpass.dll:UnityStandardAssets.Effects.Explosive
-03b5d483fb0de5ba0d9d6586359f770e Assembly-CSharp.dll:.WeaponManager
+e3dd663f18b0ea947e9ee6d7f8e2e29f Assembly-CSharp.dll:.WeaponManager
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.GroundCheck
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp-firstpass.dll:UnityStandardAssets.Utility.FPSCounter
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.AudioManager
