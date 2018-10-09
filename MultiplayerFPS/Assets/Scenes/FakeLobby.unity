@@ -425,6 +425,11 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 114443324105297924, guid: a7d82a008c3e2e44898867e8971520a1,
+        type: 2}
+      propertyPath: m_SpawnPrefabs.Array.size
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 4266905323160960, guid: a7d82a008c3e2e44898867e8971520a1, type: 2}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -461,6 +466,24 @@ Prefab:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114443324105297924, guid: a7d82a008c3e2e44898867e8971520a1,
+        type: 2}
+      propertyPath: m_SpawnPrefabs.Array.data[4]
+      value: 
+      objectReference: {fileID: 1880665148455228, guid: aed7d49554203a64ca29172dff1fb33f,
+        type: 2}
+    - target: {fileID: 114443324105297924, guid: a7d82a008c3e2e44898867e8971520a1,
+        type: 2}
+      propertyPath: m_SpawnPrefabs.Array.data[5]
+      value: 
+      objectReference: {fileID: 1880665148455228, guid: fa2cee4b5a86ce946a7a69a46d330cef,
+        type: 2}
+    - target: {fileID: 114443324105297924, guid: a7d82a008c3e2e44898867e8971520a1,
+        type: 2}
+      propertyPath: m_SpawnPrefabs.Array.data[6]
+      value: 
+      objectReference: {fileID: 1406924967694490, guid: e3358035a06f60e47b7f6fadc407083d,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a7d82a008c3e2e44898867e8971520a1, type: 2}
   m_IsPrefabParent: 0
@@ -511,6 +534,9 @@ MonoBehaviour:
   - {fileID: 1887598873913650, guid: 7cb52677348ded640840495a9db2f452, type: 2}
   - {fileID: 1674541337278282, guid: e4a9e8eb20eb2444da327e916172507c, type: 2}
   - {fileID: 1929637238537298, guid: 558421ab7c14a294eaf97bce6c5dbae5, type: 2}
+  - {fileID: 1880665148455228, guid: aed7d49554203a64ca29172dff1fb33f, type: 2}
+  - {fileID: 1880665148455228, guid: fa2cee4b5a86ce946a7a69a46d330cef, type: 2}
+  - {fileID: 1406924967694490, guid: e3358035a06f60e47b7f6fadc407083d, type: 2}
   m_CustomConfig: 0
   m_MaxConnections: 4
   m_ConnectionConfig:

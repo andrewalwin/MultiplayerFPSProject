@@ -8,6 +8,7 @@ public class Health : NetworkBehaviour {
     [SerializeField]
     private int maxHealth;
     [SerializeField]
+    [SyncVar]
     private int currentHealth;
 
     public delegate void HealthChangedDelegate();
@@ -19,17 +20,17 @@ public class Health : NetworkBehaviour {
 
     private void OnEnable()
     {
-        //currentHealth = maxHealth;
         Recover(maxHealth);
     }
 
     public void Damage(int damageAmount)
     {
-        CmdDamage(damageAmount);
+        currentHealth = Mathf.Clamp((currentHealth - damageAmount), 0, maxHealth);
         if (healthChanged != null)
         {
             healthChanged();
         }
+        CmdDamage(damageAmount);
     }
 
     public void Damage(float damageAmount)
@@ -47,7 +48,12 @@ public class Health : NetworkBehaviour {
     [ClientRpc]
     private void RpcDamage(int damageAmount)
     {
-        currentHealth = Mathf.Max(0, currentHealth - damageAmount);
+        if(!isLocalPlayer)
+        currentHealth = Mathf.Clamp((currentHealth - damageAmount), 0, maxHealth);
+        if (healthChanged != null)
+        {
+            healthChanged();
+        }
     }
 
     public void Recover(int recoverAmount)
@@ -58,7 +64,7 @@ public class Health : NetworkBehaviour {
     public void Recover(float recoverAmount)
     {
         int roundedRecover = Mathf.RoundToInt(recoverAmount);
-        CmdRecover(roundedRecover);
+        Recover(roundedRecover);
     }
     
     [Command]
@@ -70,7 +76,7 @@ public class Health : NetworkBehaviour {
     [ClientRpc]
     private void RpcRecover(int recoverAmount)
     {
-        currentHealth = Mathf.Max(maxHealth, currentHealth + recoverAmount);
+        currentHealth = Mathf.Clamp((currentHealth + recoverAmount), 0, maxHealth);
         if (healthChanged != null)
         {
             healthChanged();

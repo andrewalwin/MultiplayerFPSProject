@@ -328,4 +328,13 @@ public class WeaponManager : NetworkBehaviour {
     {
         return currentWeaponIns;
     }
+
+    public void RefillCurrentWeapon(int refillAmount)
+    {
+        Weapon curWep = GetCurrentWeapon();
+        if(curWep != null)
+        {
+            curWep.ammoCount = Mathf.Min(curWep.ammoCount + refillAmount, curWep.GetMaxAmmo());
+        }
+    }
 }

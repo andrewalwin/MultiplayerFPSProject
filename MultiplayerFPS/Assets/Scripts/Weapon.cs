@@ -198,6 +198,11 @@ public class Weapon : NetworkBehaviour{
         return ammoCount;
     }
 
+    public int GetMaxAmmo()
+    {
+        return maxAmmo;
+    }
+
     public void SetWeaponCamera(Camera cam)
     {
         weaponCamera = cam;

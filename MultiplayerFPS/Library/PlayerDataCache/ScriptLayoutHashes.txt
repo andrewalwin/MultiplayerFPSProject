@@ -202,3 +202,6 @@ e3dd663f18b0ea947e9ee6d7f8e2e29f Assembly-CSharp.dll:.WeaponManager
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.AudioManager
 3e592d5e5e078e9b570cbefeeb25988f Assembly-CSharp.dll:.JoinGame
 0f3d4bb7128a287827d041c696039525 Assembly-CSharp-firstpass.dll:UnityStandardAssets.Utility.AutoMobileShaderSwitch
+dcb9f9d549f39acd3a255f8ef443429f Assembly-CSharp.dll:.PickupHealth
+4130435004997e00e7cc04de04c389ef Assembly-CSharp.dll:.PickupAmmo
+8a7d38d6d97d29ec8cd50c72684951ad Assembly-CSharp.dll:.PickupPlatform

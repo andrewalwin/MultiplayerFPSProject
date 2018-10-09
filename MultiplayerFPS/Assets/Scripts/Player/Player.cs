@@ -39,7 +39,7 @@ public class Player : NetworkBehaviour
 
     private void Update()
     {
-        if (Input.GetKey(KeyCode.K))
+        if (Input.GetKeyDown(KeyCode.K))
         {
             if(playerHealth != null)
             {
@@ -50,6 +50,7 @@ public class Player : NetworkBehaviour
 
     public void CheckHealth()
     {
+        Debug.Log("HEALTH CHECK: " + GetComponent<Health>().GetCurrentHealth());
         if (isDead)
         {
             return;
