@@ -80,8 +80,6 @@ GameObject:
   - component: {fileID: 114656767600427296}
   - component: {fileID: 114327029795624356}
   - component: {fileID: 114345007976938638}
-  - component: {fileID: 114570815031338412}
-  - component: {fileID: 114592142482916334}
   m_Layer: 9
   m_Name: PlayerTest 1
   m_TagString: Player
@@ -468,39 +466,6 @@ MonoBehaviour:
   m_SnapThreshold: 5
   m_InterpolateRotation: 10
   m_InterpolateMovement: 1
---- !u!114 &114570815031338412
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1716121588963058}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 82046bdc2d546a8488eb256cd71d81e3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  abilityKey: 113
-  abilityCooldown: 1
-  nextCooldownTime: 0
-  timeLeftCooldown: 0
-  abilityImage: {fileID: 0}
-  darkMask: {fileID: 0}
-  cooldownText: {fileID: 0}
-  ability: {fileID: 11400000, guid: ce4ba28ef06134e45a740c4421beebbd, type: 2}
---- !u!114 &114592142482916334
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1716121588963058}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 665306eb69f7cf843a913c5676292778, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  projectilePrefab: {fileID: 0}
-  firePoint: {fileID: 0}
-  fireSpeed: 0
 --- !u!114 &114656767600427296
 MonoBehaviour:
   m_ObjectHideFlags: 1

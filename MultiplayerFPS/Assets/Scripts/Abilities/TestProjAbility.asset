@@ -12,9 +12,8 @@ MonoBehaviour:
   m_Name: TestProjAbility
   m_EditorClassIdentifier: 
   name: Ability
-  abilityIcon: {fileID: 0}
+  abilityIcon: {fileID: 21300000, guid: 257220644a72ca649b4bde1026a9d2b7, type: 3}
   cooldown: 1
   projectilePrefab: {fileID: 0}
-  firePoint: {fileID: 0}
   fireSpeed: 0
   launcher: {fileID: 0}

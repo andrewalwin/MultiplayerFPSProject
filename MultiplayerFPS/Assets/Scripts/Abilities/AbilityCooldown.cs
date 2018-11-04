@@ -15,12 +15,11 @@ public class AbilityCooldown : MonoBehaviour {
     public Image darkMask;
     public Text cooldownText;
 
-    [SerializeField]
-    private Ability ability;
+    public Ability ability;
 
     private AudioClip abilityClip;
 
-    void Start()
+    void Setup()
     {
         Initialize(ability);
     }
@@ -29,8 +28,8 @@ public class AbilityCooldown : MonoBehaviour {
     {
         ability = selectedAbility;
         abilityCooldown = ability.cooldown;
-        //abilityImage.sprite = ability.abilityIcon;
-        //darkMask.sprite = ability.abilityIcon;
+        abilityImage.sprite = ability.abilityIcon;
+        darkMask.sprite = ability.abilityIcon;
         ability.Initialize(gameObject);
     }
 
@@ -52,16 +51,16 @@ public class AbilityCooldown : MonoBehaviour {
 
     void ReadyAbility()
     {
-        //darkMask.enabled = false;
-        //cooldownText.enabled = false;
+        darkMask.enabled = false;
+        cooldownText.enabled = false;
     }
 
     void Cooldown()
     {
         timeLeftCooldown -= Time.deltaTime;
         Mathf.Round(timeLeftCooldown);
-        //cooldownText.text = timeLeftCooldown.ToString();
-        //darkMask.fillAmount = (timeLeftCooldown / abilityCooldown);
+        cooldownText.text = timeLeftCooldown.ToString();
+        darkMask.fillAmount = (timeLeftCooldown / abilityCooldown);
     }
 
     void AbilityTriggered()
@@ -71,8 +70,8 @@ public class AbilityCooldown : MonoBehaviour {
 
         //play our abilityClip sound
 
-        //darkMask.enabled = true;
-        //cooldownText.enabled = true;
+        darkMask.enabled = true;
+        cooldownText.enabled = true;
 
         ability.ActivateAbility();
     }
