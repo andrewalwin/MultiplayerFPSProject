@@ -380,7 +380,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.2205882, g: 0.21734427, b: 0.21734427, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -450,7 +450,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.2205882, g: 0.21734427, b: 0.21734427, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -646,6 +646,18 @@ MonoBehaviour:
   healthFill: {fileID: 114328411038666242}
   healthBackground: {fileID: 114450653866128688}
   ammoText: {fileID: 114300734595724278}
+  abilityImages:
+  - {fileID: 114107999318553612}
+  - {fileID: 114845333786992044}
+  - {fileID: 114736831754764862}
+  abilityDarkMasks:
+  - {fileID: 114670413550023240}
+  - {fileID: 114156978449871074}
+  - {fileID: 114042026688275140}
+  abilityCooldownTexts:
+  - {fileID: 114322514641761194}
+  - {fileID: 114665959568437644}
+  - {fileID: 114189634639693230}
 --- !u!114 &114475425427264398
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -705,7 +717,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.2205882, g: 0.21734427, b: 0.21734427, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
