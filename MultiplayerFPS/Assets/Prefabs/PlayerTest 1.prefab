@@ -82,6 +82,7 @@ GameObject:
   - component: {fileID: 114345007976938638}
   - component: {fileID: 114572150485516958}
   - component: {fileID: 114342333311560522}
+  - component: {fileID: 114392631641945210}
   m_Layer: 9
   m_Name: PlayerTest 1
   m_TagString: Player
@@ -447,6 +448,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   currentHealth: 100
+--- !u!114 &114392631641945210
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1716121588963058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0dbdd5c249ff1f7428284a6a03d293a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnableObject: {fileID: 1674541337278282, guid: e4a9e8eb20eb2444da327e916172507c,
+    type: 2}
+  cam: {fileID: 20619897994648768}
+  spawnRange: 1000
+  spawnAngleMax: 90
+  ignoreCollisions:
+    serializedVersion: 2
+    m_Bits: 19248
+  abilityKey: 113
 --- !u!114 &114524498246052770
 MonoBehaviour:
   m_ObjectHideFlags: 1
