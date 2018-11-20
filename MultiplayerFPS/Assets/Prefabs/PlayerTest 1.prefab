@@ -459,7 +459,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dbdd5c249ff1f7428284a6a03d293a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnableObject: {fileID: 1674541337278282, guid: e4a9e8eb20eb2444da327e916172507c,
+  spawnablePrefab: {fileID: 1406924967694490, guid: e3358035a06f60e47b7f6fadc407083d,
     type: 2}
   cam: {fileID: 20619897994648768}
   spawnRange: 1000

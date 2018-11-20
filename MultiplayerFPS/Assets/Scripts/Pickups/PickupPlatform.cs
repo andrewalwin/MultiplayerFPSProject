@@ -28,7 +28,7 @@ public class PickupPlatform : NetworkBehaviour {
     [Command]
     void CmdSpawnPickup()
     {
-        GameObject pickupIns = Instantiate(pickupPrefab, spawnPoint.position, Quaternion.identity);
+        GameObject pickupIns = Instantiate(pickupPrefab, spawnPoint.position, pickupPrefab.transform.rotation);
         //pickupIns.transform.SetParent(spawnPoint);
         NetworkServer.Spawn(pickupIns);
         //RpcSpawnPickup(pickupIns);
@@ -37,7 +37,7 @@ public class PickupPlatform : NetworkBehaviour {
     [ClientRpc]
     void RpcSpawnPickup()
     {
-        GameObject pickupIns = Instantiate(pickupPrefab, spawnPoint.position, Quaternion.identity);
+        GameObject pickupIns = Instantiate(pickupPrefab, spawnPoint.position, pickupPrefab.transform.rotation);
         //pickupIns.transform.SetParent(spawnPoint);
         NetworkServer.Spawn(pickupIns);
     }
