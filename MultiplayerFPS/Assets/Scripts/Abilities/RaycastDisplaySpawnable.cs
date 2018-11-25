@@ -78,15 +78,10 @@ public class RaycastDisplaySpawnable : MonoBehaviour {
 
     private void SetupDisplayable()
     {
-        spawnableDisplayIns = GameObject.Instantiate(spawnablePrefab, new Vector3(0,0,0), spawnablePrefab.transform.rotation);
+        spawnableDisplayIns = GameObject.Instantiate(spawnablePrefab, new Vector3(0, 0, 0), spawnablePrefab.transform.rotation);
         spawnableDisplayIns.transform.localScale = spawnablePrefab.transform.localScale;
-
+        //Mesh spawnableMesh = spawnableDisplayIns.GetComponentInChildren<MeshFilter>().sharedMesh;
         spawnableDisplayIns.SetActive(false);
-
-        //set position of objec to bottom of the object
-        Mesh spawnableMesh = spawnableDisplayIns.GetComponentInChildren<MeshFilter>().sharedMesh;
-        //bottomDistance = Vector3.Distance(spawnableMesh.bounds.center, ((spawnableDisplayIns.transform.localScale) * (-spawnableMesh.bounds.extents.y)));
-        //bottomDistance = Vector3.Distance(spawnableDisplayIns.transform.position, ((spawnableDisplayIns.transform.localScale) * (-spawnableMesh.bounds.extents.y)));
 
         Bounds displayBounds = spawnableDisplayIns.GetComponentInChildren<Renderer>().bounds;
         Renderer[] displayRenderers = spawnableDisplayIns.GetComponentsInChildren<Renderer>();
@@ -99,12 +94,13 @@ public class RaycastDisplaySpawnable : MonoBehaviour {
         }
 
         //bottomDistance = Vector3.Distance(displayBounds.center, (displayBounds.extents * spawnableDisplayIns.transform.localScale.y));
-        Debug.Log("LocPOS: " + spawnableDisplayIns.transform.position);
-        Debug.Log("LocBOUN: " + (displayBounds.extents.y));
         //bottomDistance = Vector3.Distance(spawnableDisplayIns.transform.localPosition, (spawnableMesh.bounds.extents.y * spawnableDisplayIns.transform.localScale));
-        bottomDistance = displayBounds.extents.y;
+        float pivotCenterDistance = Vector3.Distance(spawnableDisplayIns.transform.position, displayBounds.center);
+        pivotCenterDistance *= spawnableDisplayIns.transform.position.y > displayBounds.center.y ? 1.0f : -1.0f;
 
+        bottomDistance = displayBounds.extents.y + pivotCenterDistance;
 
+        //disable what we don't need
         MeshRenderer[] displayObjRenderers = spawnableDisplayIns.GetComponentsInChildren<MeshRenderer>();
         Behaviour[] displayBehaviours = spawnableDisplayIns.GetComponentsInChildren<Behaviour>();
         Collider[] displayColliders = spawnableDisplayIns.GetComponentsInChildren<Collider>();
@@ -147,7 +143,7 @@ public class RaycastDisplaySpawnable : MonoBehaviour {
                 spawnableDisplayIns.transform.position = hit.point;
                 //spawnableDisplayIns.transform.forward = spawnableRotation;
                 spawnableDisplayIns.transform.up = hit.normal;
-                spawnableDisplayIns.transform.Rotate(spawnablePrefab.transform.rotation.eulerAngles);
+                //spawnableDisplayIns.transform.Rotate(spawnablePrefab.transform.rotation.eulerAngles);
                 spawnableDisplayIns.transform.position += (hit.normal * bottomDistance);
 
                 if (Vector3.Angle(hit.normal, Vector3.up) <= spawnAngleMax)
