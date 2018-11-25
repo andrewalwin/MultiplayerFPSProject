@@ -21,6 +21,7 @@ public class RaycastDisplaySpawnable : MonoBehaviour {
     [SerializeField]
     private float spawnAngleMax;
     private float bottomDistance = 0f;
+    private float currentRotation = 0f;
 
     [SerializeField]
     private LayerMask ignoreCollisions;
@@ -62,9 +63,10 @@ public class RaycastDisplaySpawnable : MonoBehaviour {
 
             if (isDisplaying)
             {
+
                 if (Input.GetMouseButton(1))
                 {
-                    //spawnableRotation = (spawnableRotation + 2.0f) % 360;
+                    currentRotation += 30f * Time.deltaTime;
                 }
                 TryDisplaySpawnable();
             }
@@ -96,6 +98,7 @@ public class RaycastDisplaySpawnable : MonoBehaviour {
         //bottomDistance = Vector3.Distance(displayBounds.center, (displayBounds.extents * spawnableDisplayIns.transform.localScale.y));
         //bottomDistance = Vector3.Distance(spawnableDisplayIns.transform.localPosition, (spawnableMesh.bounds.extents.y * spawnableDisplayIns.transform.localScale));
         float pivotCenterDistance = Vector3.Distance(spawnableDisplayIns.transform.position, displayBounds.center);
+        //if the pivot is closer to the bottom bounds than the center, need to subtract the difference between the two instead of adding it
         pivotCenterDistance *= spawnableDisplayIns.transform.position.y > displayBounds.center.y ? 1.0f : -1.0f;
 
         bottomDistance = displayBounds.extents.y + pivotCenterDistance;
@@ -145,25 +148,35 @@ public class RaycastDisplaySpawnable : MonoBehaviour {
                 spawnableDisplayIns.transform.up = hit.normal;
                 //spawnableDisplayIns.transform.Rotate(spawnablePrefab.transform.rotation.eulerAngles);
                 spawnableDisplayIns.transform.position += (hit.normal * bottomDistance);
+                spawnableDisplayIns.transform.Rotate(spawnableDisplayIns.transform.up, currentRotation, Space.World);
 
                 if (Vector3.Angle(hit.normal, Vector3.up) <= spawnAngleMax)
                 {
                     //make color "valid" maybe so player knows they can spawn it
                     //maybe enable above so we're not CONSTANTLY enabling the object
-                    spawnableDisplayIns.SetActive(true);
+                    if (!spawnableDisplayIns.activeSelf)
+                    {
+                        spawnableDisplayIns.SetActive(true);
+                    }
                     canSpawn = true;
                 }
                 else
                 {
                     Debug.Log("Invalid");
                     //make color "invalid" maybe
-                    spawnableDisplayIns.SetActive(false);
+                    if (spawnableDisplayIns.activeSelf)
+                    {
+                        spawnableDisplayIns.SetActive(false);
+                    }
                     canSpawn = false;
                 }
             }
             else
             {
-                spawnableDisplayIns.SetActive(false);
+                if (spawnableDisplayIns.activeSelf)
+                {
+                    spawnableDisplayIns.SetActive(false);
+                }
                 canSpawn = false;
             }
         }
