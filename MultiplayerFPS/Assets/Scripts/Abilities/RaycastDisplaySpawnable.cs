@@ -26,13 +26,18 @@ public class RaycastDisplaySpawnable : MonoBehaviour {
     [SerializeField]
     private LayerMask ignoreCollisions;
 
-    private Vector3 spawnableRotation;
-
     private bool isDisplaying = false;
 	private bool canSpawn;
 
     [SerializeField]
     private KeyCode abilityKey;
+
+    private Material validDisplayMaterial;
+    private Material invalidDisplayMaterial;
+
+    private MeshRenderer[] displayObjRenderers;
+
+    private Bounds displayBounds;
     
     void Start()
     {
@@ -48,7 +53,8 @@ public class RaycastDisplaySpawnable : MonoBehaviour {
             //spawnableIns.SetActive(false);
         }
 
-        spawnableRotation = transform.forward;
+        validDisplayMaterial = (Material)Resources.Load("Materials/DisplaySpawnableMaterial", typeof(Material));
+        invalidDisplayMaterial = (Material)Resources.Load("Materials/InvalidDisplaySpawnableMaterial", typeof(Material));
     }
 
     void Update()
@@ -57,7 +63,7 @@ public class RaycastDisplaySpawnable : MonoBehaviour {
         {
             if (Input.GetKeyDown(KeyCode.T))
             {
-                Debug.Log("Current displayable: " + isDisplaying);
+                currentRotation = 0f;
                 isDisplaying = !isDisplaying;
             }
 
@@ -85,7 +91,7 @@ public class RaycastDisplaySpawnable : MonoBehaviour {
         //Mesh spawnableMesh = spawnableDisplayIns.GetComponentInChildren<MeshFilter>().sharedMesh;
         spawnableDisplayIns.SetActive(false);
 
-        Bounds displayBounds = spawnableDisplayIns.GetComponentInChildren<Renderer>().bounds;
+        displayBounds = spawnableDisplayIns.GetComponentInChildren<Renderer>().bounds;
         Renderer[] displayRenderers = spawnableDisplayIns.GetComponentsInChildren<Renderer>();
         foreach(Renderer rend in displayRenderers)
         {
@@ -95,27 +101,23 @@ public class RaycastDisplaySpawnable : MonoBehaviour {
             }
         }
 
-        //bottomDistance = Vector3.Distance(displayBounds.center, (displayBounds.extents * spawnableDisplayIns.transform.localScale.y));
-        //bottomDistance = Vector3.Distance(spawnableDisplayIns.transform.localPosition, (spawnableMesh.bounds.extents.y * spawnableDisplayIns.transform.localScale));
         float pivotCenterDistance = Vector3.Distance(spawnableDisplayIns.transform.position, displayBounds.center);
-        //if the pivot is closer to the bottom bounds than the center, need to subtract the difference between the two instead of adding it
         pivotCenterDistance *= spawnableDisplayIns.transform.position.y > displayBounds.center.y ? 1.0f : -1.0f;
 
         bottomDistance = displayBounds.extents.y + pivotCenterDistance;
 
         //disable what we don't need
-        MeshRenderer[] displayObjRenderers = spawnableDisplayIns.GetComponentsInChildren<MeshRenderer>();
+        displayObjRenderers = spawnableDisplayIns.GetComponentsInChildren<MeshRenderer>();
         Behaviour[] displayBehaviours = spawnableDisplayIns.GetComponentsInChildren<Behaviour>();
         Collider[] displayColliders = spawnableDisplayIns.GetComponentsInChildren<Collider>();
 
         Color displayColor = new Color(Color.blue.r, Color.blue.g, Color.blue.b, 0.1f);
-        Material displayMaterial = (Material)Resources.Load("Materials/DisplaySpawnableMaterial", typeof(Material));
 
         for(int i = 0; i < displayObjRenderers.Length; i++)
         {
-            if (displayMaterial != null)
+            if (validDisplayMaterial != null)
             {
-                displayObjRenderers[i].material = displayMaterial;
+                displayObjRenderers[i].material = validDisplayMaterial;
             }
         }
 
@@ -144,9 +146,7 @@ public class RaycastDisplaySpawnable : MonoBehaviour {
             if (Physics.Raycast(rayOrigin, cam.transform.forward, out hit, spawnRange))
             {
                 spawnableDisplayIns.transform.position = hit.point;
-                //spawnableDisplayIns.transform.forward = spawnableRotation;
                 spawnableDisplayIns.transform.up = hit.normal;
-                //spawnableDisplayIns.transform.Rotate(spawnablePrefab.transform.rotation.eulerAngles);
                 spawnableDisplayIns.transform.position += (hit.normal * bottomDistance);
                 spawnableDisplayIns.transform.Rotate(spawnableDisplayIns.transform.up, currentRotation, Space.World);
 
@@ -158,12 +158,17 @@ public class RaycastDisplaySpawnable : MonoBehaviour {
                     {
                         spawnableDisplayIns.SetActive(true);
                     }
+                    if(displayObjRenderers[0].material != validDisplayMaterial)
+                    {
+                        for(int i = 0; i < displayObjRenderers.Length; i++)
+                        {
+                            displayObjRenderers[i].material = validDisplayMaterial;
+                        }
+                    }
                     canSpawn = true;
                 }
                 else
                 {
-                    Debug.Log("Invalid");
-                    //make color "invalid" maybe
                     if (spawnableDisplayIns.activeSelf)
                     {
                         spawnableDisplayIns.SetActive(false);
@@ -171,14 +176,24 @@ public class RaycastDisplaySpawnable : MonoBehaviour {
                     canSpawn = false;
                 }
             }
-            else
-            {
-                if (spawnableDisplayIns.activeSelf)
+            //check if our object collides with anything, disabling spawning, and making it display as invalid
+            Collider[] intersectedColliders = Physics.OverlapBox(spawnableDisplayIns.transform.TransformPoint(displayBounds.center), displayBounds.extents * 0.8f, spawnableDisplayIns.transform.rotation);
+
+            if (intersectedColliders.Length > 0 && displayObjRenderers[0].material != invalidDisplayMaterial){
+                for (int i = 0; i < displayObjRenderers.Length; i++)
                 {
-                    spawnableDisplayIns.SetActive(false);
+                    displayObjRenderers[i].material = invalidDisplayMaterial;
+                    canSpawn = false;
                 }
-                canSpawn = false;
             }
+            //else
+            //{
+            //    if (spawnableDisplayIns.activeSelf)
+            //    {
+            //        spawnableDisplayIns.SetActive(false);
+            //    }
+            //    canSpawn = false;
+            //}
         }
     }
 }
