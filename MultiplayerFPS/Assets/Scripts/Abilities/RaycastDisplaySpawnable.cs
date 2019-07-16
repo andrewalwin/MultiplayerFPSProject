@@ -5,7 +5,6 @@ using UnityEngine.Networking;
 
 public class RaycastDisplaySpawnable : MonoBehaviour {
 
-    //object has to have the same forward as the object you want to spawn, or else it'll spawn at weird angles
     [SerializeField]
     private GameObject spawnablePrefab;
     //display only
@@ -20,6 +19,8 @@ public class RaycastDisplaySpawnable : MonoBehaviour {
     private float spawnRange;
     [SerializeField]
     private float spawnAngleMax;
+    [SerializeField]
+    private float overlapBoxSize;
     private float bottomDistance = 0f;
     private float currentRotation = 0f;
 
@@ -38,19 +39,17 @@ public class RaycastDisplaySpawnable : MonoBehaviour {
     private MeshRenderer[] displayObjRenderers;
 
     private Bounds displayBounds;
-    
+    private Bounds colliderBounds;
+
     void Start()
     {
         if (cam == null)
         {
             cam = GetComponent<Camera>();
         }
-        //can do our creation of spawnableobject here if we don't use a prefab
         if (spawnablePrefab != null)
         {
             SetupDisplayable();
-            //spawnableIns = GameObject.Instantiate(spawnablePrefab);
-            //spawnableIns.SetActive(false);
         }
 
         validDisplayMaterial = (Material)Resources.Load("Materials/DisplaySpawnableMaterial", typeof(Material));
@@ -81,6 +80,22 @@ public class RaycastDisplaySpawnable : MonoBehaviour {
                 spawnableDisplayIns.SetActive(false);
                 canSpawn = false;
             }
+
+            if (Input.GetMouseButton(0))
+            {
+                if(isDisplaying && canSpawn)
+                {
+                    isDisplaying = false;
+                    GameObject spawnedIns = GameObject.Instantiate(spawnablePrefab, spawnableDisplayIns.transform.position, spawnableDisplayIns.transform.rotation);
+                    Spawnable spawnableBehav = spawnedIns.GetComponent<Spawnable>();
+                    if(spawnableBehav != null)
+                    {
+                        Vector3 floorPos = spawnedIns.transform.position + (spawnedIns.transform.up.normalized * bottomDistance * -1);
+                        spawnableBehav.OnSpawn(floorPos);
+                    }
+                    
+                }
+            }
         }
     }
 
@@ -88,28 +103,48 @@ public class RaycastDisplaySpawnable : MonoBehaviour {
     {
         spawnableDisplayIns = GameObject.Instantiate(spawnablePrefab, new Vector3(0, 0, 0), spawnablePrefab.transform.rotation);
         spawnableDisplayIns.transform.localScale = spawnablePrefab.transform.localScale;
-        //Mesh spawnableMesh = spawnableDisplayIns.GetComponentInChildren<MeshFilter>().sharedMesh;
+
         spawnableDisplayIns.SetActive(false);
 
         displayBounds = spawnableDisplayIns.GetComponentInChildren<Renderer>().bounds;
+        colliderBounds = spawnableDisplayIns.GetComponentInChildren<Collider>().bounds;
+
         Renderer[] displayRenderers = spawnableDisplayIns.GetComponentsInChildren<Renderer>();
-        foreach(Renderer rend in displayRenderers)
+        Collider[] displayColliders = spawnableDisplayIns.GetComponentsInChildren<Collider>();
+        if (displayRenderers.Length > 0)
         {
-            if(rend != spawnableDisplayIns.GetComponent<Renderer>())
+            foreach (Renderer rend in displayRenderers)
             {
-                displayBounds.Encapsulate(rend.bounds);
+                if (rend != spawnableDisplayIns.GetComponent<Renderer>())
+                {
+                    displayBounds.Encapsulate(rend.bounds);
+                }
             }
+
+            float pivotCenterDistance = Vector3.Distance(spawnableDisplayIns.transform.position, displayBounds.center);
+            pivotCenterDistance *= spawnableDisplayIns.transform.position.y > displayBounds.center.y ? 1.0f : -1.0f;
+
+            bottomDistance = displayBounds.extents.y + pivotCenterDistance;
         }
+        else
+        {
+            foreach (Collider col in displayColliders)
+            {
+                if(col != spawnableDisplayIns.GetComponent<Collider>())
+                {
+                    colliderBounds.Encapsulate(col.bounds);
+                }
+            }
 
-        float pivotCenterDistance = Vector3.Distance(spawnableDisplayIns.transform.position, displayBounds.center);
-        pivotCenterDistance *= spawnableDisplayIns.transform.position.y > displayBounds.center.y ? 1.0f : -1.0f;
+            float pivotCenterDistance = Vector3.Distance(spawnableDisplayIns.transform.position, colliderBounds.center);
+            pivotCenterDistance *= spawnableDisplayIns.transform.position.y > colliderBounds.center.y ? 1.0f : -1.0f;
 
-        bottomDistance = displayBounds.extents.y + pivotCenterDistance;
+            bottomDistance = displayBounds.extents.y + pivotCenterDistance;
+        }
 
         //disable what we don't need
         displayObjRenderers = spawnableDisplayIns.GetComponentsInChildren<MeshRenderer>();
         Behaviour[] displayBehaviours = spawnableDisplayIns.GetComponentsInChildren<Behaviour>();
-        Collider[] displayColliders = spawnableDisplayIns.GetComponentsInChildren<Collider>();
 
         Color displayColor = new Color(Color.blue.r, Color.blue.g, Color.blue.b, 0.1f);
 
@@ -152,8 +187,6 @@ public class RaycastDisplaySpawnable : MonoBehaviour {
 
                 if (Vector3.Angle(hit.normal, Vector3.up) <= spawnAngleMax)
                 {
-                    //make color "valid" maybe so player knows they can spawn it
-                    //maybe enable above so we're not CONSTANTLY enabling the object
                     if (!spawnableDisplayIns.activeSelf)
                     {
                         spawnableDisplayIns.SetActive(true);
@@ -176,8 +209,18 @@ public class RaycastDisplaySpawnable : MonoBehaviour {
                     canSpawn = false;
                 }
             }
+
+            else
+            {
+                if (spawnableDisplayIns.activeSelf)
+                {
+                    spawnableDisplayIns.SetActive(false);
+                }
+                canSpawn = false;
+            }
+
             //check if our object collides with anything, disabling spawning, and making it display as invalid
-            Collider[] intersectedColliders = Physics.OverlapBox(spawnableDisplayIns.transform.TransformPoint(displayBounds.center), displayBounds.extents * 0.8f, spawnableDisplayIns.transform.rotation);
+            Collider[] intersectedColliders = Physics.OverlapBox(spawnableDisplayIns.transform.TransformPoint(displayBounds.center), displayBounds.extents * overlapBoxSize, spawnableDisplayIns.transform.rotation);
 
             if (intersectedColliders.Length > 0 && displayObjRenderers[0].material != invalidDisplayMaterial){
                 for (int i = 0; i < displayObjRenderers.Length; i++)
@@ -186,14 +229,6 @@ public class RaycastDisplaySpawnable : MonoBehaviour {
                     canSpawn = false;
                 }
             }
-            //else
-            //{
-            //    if (spawnableDisplayIns.activeSelf)
-            //    {
-            //        spawnableDisplayIns.SetActive(false);
-            //    }
-            //    canSpawn = false;
-            //}
         }
     }
 }

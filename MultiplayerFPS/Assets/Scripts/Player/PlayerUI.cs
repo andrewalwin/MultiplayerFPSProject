@@ -67,13 +67,13 @@ public class PlayerUI : MonoBehaviour {
         playerWeaponManager = _player.GetComponent<WeaponManager>();
         playerAbilityManager = _player.GetComponent<AbilityManager>();
 
-        if (playerAbilityManager != null)
-        {
-            SetAbilities(playerAbilityManager.abilityCooldowns);
-        }
+        //if (playerAbilityManager != null)
+        //{
+        //    SetAbilities(playerAbilityManager.abilityCooldowns);
+        //}
     }
 
-    private void SetAbilities(AbilityCooldown[] abilities)
+    public void SetAbilities(AbilityCooldown[] abilities)
     {
         if(abilities.Length >= abilityImages.Length)
         {
